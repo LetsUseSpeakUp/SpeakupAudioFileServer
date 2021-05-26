@@ -19,6 +19,7 @@ router.post('/', (req, res)=>{
             const convoFile = req.files.convoFile;
             //TODO: Also get metadata about the convo
             convoFile.mv('./uploads/' + convoFile.name);
+            console.log("Uploader: ", req.body.uploader);
             res.send({
                 status: true,
                 message: 'File uploaded',
