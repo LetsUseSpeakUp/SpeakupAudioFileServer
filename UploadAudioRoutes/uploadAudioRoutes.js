@@ -2,7 +2,9 @@ const express = require('express');
 const router = express.Router();
 
 router.get('/', (req, res)=>{
-    res.send("Don't use get for fileupload!");
+    res.send({
+        message: "Don't use GET for file upload!"
+    });
 })
 
 router.post('/', (req, res)=>{
