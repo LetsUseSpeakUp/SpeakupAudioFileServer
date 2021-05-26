@@ -8,6 +8,7 @@ router.get('/', (req, res)=>{
 })
 
 router.post('/', (req, res)=>{
+    console.log("Post request made to /audioUpload.");
     try{
         if(!req.files){
             res.send({
@@ -16,8 +17,11 @@ router.post('/', (req, res)=>{
             })
         }
         else{
+            console.log("Convo meta data: ", req.body.convoMetaData);
+            console.log("Files uploaded. Files: ", req.files);
             const convoFile = req.files.convoFile;
-            //TODO: Also get metadata about the convo
+            
+
             convoFile.mv('./uploads/' + convoFile.name);
             console.log("Uploader: ", req.body.uploader);
             res.send({
@@ -32,6 +36,7 @@ router.post('/', (req, res)=>{
         }
     }
     catch(err){
+        console.log("ERROR: ", err);
         res.status(500).send(err);
     }
 })
