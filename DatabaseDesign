@@ -1,26 +1,25 @@
 
 
 
-users{
-	id INTEGER PRIMARY KEY,
-	phone_number TEXT UNIQUE NOT NULL,
-	firstname TEXT NULL,
-	lastname TEXT NULL
-}
+CREATE TABLE users (
+	id INTEGER PRIMARY KEY AUTO_INCREMENT,
+	phone_number VARCHAR(20) UNIQUE NOT NULL,
+	first_name TEXT NULL,
+	last_name TEXT NULL
+);
 
-convos{
-	id TEXT UNIQUE NOT NULL,
-	initiator_id TEXT NOT NULL,
-	receiver_id TEXT NOT NULL,
+CREATE TABLE convos (
+	id VARCHAR(255) UNIQUE NOT NULL,
+	initiator_id INTEGER NOT NULL,
+	receiver_id INTEGER NOT NULL,
 	timestamp_of_start INTEGER NOT NULL,
 	length INTEGER NOT NULL,
 	initiator_approval INTEGER DEFAULT 0,
 	receiver_approval INTEGER DEFAULT 0,
 	file_path TEXT NULL,
-
-	FOREIGN KEY initiator_id REFERENCES users(id),
-	FOREIGN KEY receiver_id REFERENCES users(id)
-}
+	FOREIGN KEY (initiator_id) REFERENCES users(id),
+	FOREIGN KEY (receiver_id) REFERENCES users(id)
+)
 
 
 
