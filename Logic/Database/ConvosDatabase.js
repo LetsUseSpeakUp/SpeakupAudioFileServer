@@ -1,4 +1,4 @@
-export default class ConvosDatabase{
+class ConvosDatabase{
     databaseQuerier
 
     constructor(){
@@ -13,8 +13,18 @@ export default class ConvosDatabase{
         return wasSuccessful;
     }
 
-    async approveConvo(convoId, phoneNumber){
+    async setConvoApproval(convoId, phoneNumber, isApproved){
         const userId; //TODO: Convert phoneNumber into user id
         //TODO
     }
+
+    async getConvoFilepath(convoId){
+        //TODO
+    }
+
+    async getAllConvosMetaDataForUser(phoneNumber){
+        const userId; //TODO: Convert phone number into user id
+    }
 }
+
+module.exports = ConvosDatabase;

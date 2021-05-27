@@ -4,6 +4,8 @@ const cors = require('cors');
 const bodyParser = require('body-parser');
 const morgan = require('morgan');
 
+global.reqlib = require('app-root-path').require;
+
 const app = express();
 
 app.use(fileUpload({

@@ -1,8 +1,9 @@
-export default class DatabaseQuerier{
+class DatabaseQuerier{
     endpoint = "localhost"
     username = "speakupuser"
     password = "speakuppassword"
 
+    //TODO: Make this a singleton
 
     constructor(){
         this.connectToDatabase();
@@ -10,6 +11,7 @@ export default class DatabaseQuerier{
 
     connectToDatabase(){
         //TODO
+        //TODO: Console.log on error or success
     }
 
     /**
@@ -21,3 +23,5 @@ export default class DatabaseQuerier{
     }
 
 }
+
+module.exports = DatabaseQuerier;

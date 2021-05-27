@@ -1,4 +1,5 @@
 const router = require('express').Router();
+const UsersDatabase = reqlib('/Logic/Database/UsersDatabase');
 
 router.get('/', (req, res)=>{
     res.send({
@@ -6,24 +7,29 @@ router.get('/', (req, res)=>{
     });
 })
 
-router.post('/', (req, res)=>{
+router.post('/', async (req, res)=>{
     const phoneNumber = req.body.phoneNumber;
     const firstName = req.body.firstName;
     const lastName = req.body.lastName;
 
     if(!phoneNumber){
         res.status(400).send({
-            message: 'phone number not provided!'
+            message: 'Phone number not provided'
         })
     }
-    else{
-        //TODO: Talk to DB
-        
-        res.send({
-            message: ('Added successfully! Phone number: '
-            + phoneNumber + " Firstname: " + firstName + " lastname: "
-            + lastName)
-        });
+    else{        
+        const usersDatabase = new UsersDatabase();
+        const successInfo = await usersDatabase.createNewUser(phoneNumber, firstName, lastName);
+        if(successInfo.success){
+            res.status(200).send({
+                message: 'Added successfully!'
+            });
+        }
+        else{
+            res.status(500).send({
+                message: successInfo.errorMessage
+            });
+        }                
     }
 })
 

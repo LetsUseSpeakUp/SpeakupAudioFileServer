@@ -1,4 +1,4 @@
-export default class UsersDatabase {
+class UsersDatabase {
     databaseQuerier
 
     constructor() {
@@ -13,9 +13,9 @@ export default class UsersDatabase {
  */
     async createNewUser(phoneNumber, firstName, lastName) {
         const newUserQuery = ""; //TODO
-        const response = await this.databaseQuerier.executeQuery(newUserQuery);
+        // const response = await this.databaseQuerier.executeQuery(newUserQuery); 
 
-        const wasSuccessful; //TODO: use response
+        const wasSuccessful = {success: false, errorMessage: 'dummy create user error message'} //TODO: Use response
         return wasSuccessful;
     }
 
@@ -24,3 +24,5 @@ export default class UsersDatabase {
         //TODO
     }
 }
+
+module.exports = UsersDatabase;
