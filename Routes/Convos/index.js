@@ -9,5 +9,7 @@ router.get('/', (req,res)=>{
 
 router.use('/upload', require('./Upload'));
 router.use('/getmetadata', require('./GetMetaData'));
+router.use('/setapproval', require('./SetApproval'));
+// router.use('/retrieve', require('./Retrieve'));
 
 module.exports = router;
