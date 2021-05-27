@@ -2,11 +2,10 @@ const router = require('express').Router();
 
 router.get('/', (req, res)=>{
     res.send({
-        message: "Basic route get"
+        message: '/users base get'
     });
 })
 
-router.use('/convos', require('./Convos'));
-router.use('/users', require('./Users'));
+router.use('/create', require('./Create'));
 
 module.exports = router;
