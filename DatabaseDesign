@@ -1,0 +1,63 @@
+
+
+
+users{
+	id INTEGER PRIMARY KEY,
+	phone_number TEXT UNIQUE NOT NULL,
+	firstname TEXT NULL,
+	lastname TEXT NULL
+}
+
+convos{
+	id TEXT UNIQUE NOT NULL,
+	initiator_id TEXT NOT NULL,
+	receiver_id TEXT NOT NULL,
+	timestamp_of_start INTEGER NOT NULL,
+	length INTEGER NOT NULL,
+	initiator_approval INTEGER DEFAULT 0,
+	receiver_approval INTEGER DEFAULT 0,
+	file_path TEXT NULL,
+
+	FOREIGN KEY initiator_id REFERENCES users(id),
+	FOREIGN KEY receiver_id REFERENCES users(id)
+}
+
+
+
+Some Queries:
+1. Get all Convos for a user
+
+SELECT * FROM
+	users JOIN convos
+ON 
+	(users.id = convos.initiator_id OR
+	users.id = convos.receiver_id) AND
+	users.id =?
+<query param is user id>
+
+2. Approve convo as initiator
+
+UPDATE convos 
+SET initiator_approval = 1
+WHERE convos.id =?
+<query param is convo id>
+
+3. Disapprove convo as receiver
+
+UPDATE convos
+SET receiver_approval = -1
+WHERE convos.id =?
+<query param is convo id>
+	
+
+4. Get user id given phone number
+
+SELECT * FROM users WHERE phone_number =?
+<query param is phonen umber>
+
+5. Add user
+
+INSERT INTO users (phone_number) VALUES (?)
+<query param is phone number>
+
+

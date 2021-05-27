@@ -8,7 +8,8 @@ router.get('/', (req, res)=>{
 })
 
 router.post('/', (req, res)=>{
-    console.log("Post request made to /audioUpload.");
+    console.log("Post request made to /audioUpload. Files: ", req.files,
+    " Body: ", req.body);    
     try{
         if(!req.files){
             res.send({
