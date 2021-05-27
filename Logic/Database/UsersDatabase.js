@@ -1,9 +1,7 @@
-class UsersDatabase {
-    databaseQuerier
+const DBQuerier = require('./DatabaseQuerier')
 
-    constructor() {
-        this.databaseQuerier; //Is singleton
-    }
+class UsersDatabase {    
+    constructor() {}
 
     /**
  * Returns promise that has an object that says success or (failure and error message)

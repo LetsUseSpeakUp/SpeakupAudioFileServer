@@ -3,10 +3,12 @@ class DatabaseQuerier{
     username = "speakupuser"
     password = "speakuppassword"
 
+    testSingleton = "memberVariable"
     //TODO: Make this a singleton
 
     constructor(){
         this.connectToDatabase();
+        this.testSingleton = "constructed";
     }
 
     connectToDatabase(){
@@ -24,4 +26,11 @@ class DatabaseQuerier{
 
 }
 
-module.exports = DatabaseQuerier;
+DatabaseQuerier.getInstance = function(){
+    if(global.DatabaseQuerier_instance === undefined){
+        global.DatabaseQuerier_instance = new DatabaseQuerier();
+    }
+    return global.DatabaseQuerier_instance;
+}
+
+module.exports = DatabaseQuerier.getInstance();

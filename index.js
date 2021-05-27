@@ -3,6 +3,7 @@ const fileUpload = require('express-fileupload');
 const cors = require('cors');
 const bodyParser = require('body-parser');
 const morgan = require('morgan');
+const DBSingleton = require('./Logic/Database/DatabaseQuerier');
 
 global.reqlib = require('app-root-path').require;
 
