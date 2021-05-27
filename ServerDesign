@@ -1,0 +1,19 @@
+SpeakUpServer routes
+	/users
+		/create
+		/query (unused for now)
+	/convos
+		/upload
+		/getMetaData
+		/setApproval
+		/retrieve
+
+
+API
+	+ createNewUser (phone number)
+	+ addConvo (convoFiles, convoMetaData[which references phone number, not UID])
+	+ approveConvo (convo UID, phone number)
+	+ denyConvo (convo UID, phone number)
+	+ getConvo (convo UID)
+	+ getAllConvosMetaDataForUser (phone number)
+	+ getSnippetUrlOfConvo (phone number
