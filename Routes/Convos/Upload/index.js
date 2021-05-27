@@ -5,13 +5,15 @@ router.post('/', (req, res)=>{
     console.log("Post request made to /convos/upload. Files: ", req.files,
     " Body: ", req.body);    
     try{
-        if(!req.files){
+        if(!req.files){ //TODO: if no metadata, error
             res.send({
                 status: false,
-                message: "Wtf! No file uploaded!"
+                message: "No file uploaded"
             })
         }
         else{
+            //TODO: Write to do DB
+            //TODO: Write to proper file locatin
             console.log("Convo meta data: ", req.body.convoMetaData);
             console.log("Files uploaded. Files: ", req.files);
             const convoFile = req.files.convoFile;

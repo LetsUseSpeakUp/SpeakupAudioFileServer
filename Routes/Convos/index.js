@@ -8,5 +8,6 @@ router.get('/', (req,res)=>{
 })
 
 router.use('/upload', require('./Upload'));
+router.use('/getmetadata', require('./GetMetaData'));
 
 module.exports = router;
