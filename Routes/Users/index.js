@@ -7,5 +7,6 @@ router.get('/', (req, res)=>{
 })
 
 router.use('/create', require('./Create'));
+router.use('/query', require('./Query'));
 
 module.exports = router;
