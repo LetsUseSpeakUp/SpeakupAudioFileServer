@@ -59,4 +59,22 @@ SELECT * FROM users WHERE phone_number =?
 INSERT INTO users (phone_number) VALUES (?)
 <query param is phone number>
 
+6. Add convo
+
+INSERT INTO convos(
+	id,
+	initiator_id,
+	receiver_id,
+	timestamp_of_start,
+	length
+) VALUES (
+	'MAY26CONVOFROMFARAZ',
+	?1,
+	?2,
+	00001,
+	00099
+);
+<query param 1 is caller userId, query param 2 is receiver userId>
+<Note: userID is NOT phone number>
+
 

@@ -3,7 +3,6 @@ const fileUpload = require('express-fileupload');
 const cors = require('cors');
 const bodyParser = require('body-parser');
 const morgan = require('morgan');
-const uploadAudioRoutes = require('./UploadAudioRoutes/uploadAudioRoutes')
 
 const app = express();
 
@@ -23,8 +22,4 @@ app.listen(port,  ()=>{
     console.log("SpeakupAudioFileServer listening on port ", port);
 })
 
-app.get('/', (req, res)=>{
-    res.send("SpeakUpAudioFileServer. Base GET.");
-})
-
-app.use('/uploadAudio', uploadAudioRoutes);
+app.use('/', require('./Routes'));
