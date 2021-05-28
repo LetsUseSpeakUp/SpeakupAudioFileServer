@@ -30,9 +30,9 @@ class DatabaseQuerier{
      * Returns response promise
      * @param {*} query 
      */
-    executeQuery(query){
-        console.log("DatabaseQuerier::executing query: ", query);
-        return this.connection.execute(query);
+    executeQuery(query, bindParams){
+        console.log("DatabaseQuerier::executing query: ", query, " with params: ", bindParams);
+        return this.connection.execute(query, bindParams);
     }
 
 }

@@ -10,10 +10,15 @@ class UsersDatabase {
  * @param {*} lastName 
  */
     createNewUser(phoneNumber, firstName, lastName) {
-        const newUserQuery = ""; //TODO        
-
-        return DBQuerier.executeQuery(newUserQuery).then((queryResponse)=>{
-            console.log("UsersDatabase::createNewUser. Response: ", response);
+        const newUserQuery = 
+        `INSERT INTO users
+            (phone_number, first_name, last_name)
+        VALUES
+            (?, ?, ?)`;        
+        const bindParams = [phoneNumber, firstName, lastName];
+        
+        return DBQuerier.executeQuery(newUserQuery, bindParams).then((queryResponse)=>{
+            console.log("UsersDatabase::createNewUser. Response: ", queryResponse);
             return {success: true};
         }).catch((error)=>{
             console.log("ERROR -- UserDatabase::createNewUser: ", error);
