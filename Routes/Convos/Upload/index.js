@@ -19,7 +19,9 @@ router.post('/', async (req, res) => {
         });
     }
     else {
-        const filePath = ConvosFileManager.convertIdToFilePath(convoFile.name)
+        const metadata = JSON.parse(convoMetadata);
+
+        const filePath = ConvosFileManager.convertIdToFilePath(metadata.convoId)        
         convoFile.mv(filePath);
         const uploadResponse = await ConvosDatabase.addConvo(filePath, convoMetadata);
         if(uploadResponse.success){

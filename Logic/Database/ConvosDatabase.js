@@ -6,8 +6,9 @@ const DBQuerier = require('./DatabaseQuerier');
  * @returns 
  */
 
-const addConvo = async (convoFilePath, convoMetadata) => {
+const addConvo = async (convoFilePath, convoMetadataString) => {
     try {
+        const convoMetadata = JSON.parse(convoMetadataString);
         if (!convoMetadata.convoId) throw ('missing convoId from convoMetadata');
         if (!convoMetadata.initiatorPhoneNumber) throw ('missing initiatorPhoneNumber from convoMetadata');
         if (!convoMetadata.receiverPhoneNumber) throw ('missing receiverPhoneNumber from convoMetadata');
@@ -26,6 +27,7 @@ const addConvo = async (convoFilePath, convoMetadata) => {
         return { success: true };
     }
     catch (error) {
+        console.log("ConvosDatabase::addConvo. Error: ", error);
         return { success: false, errorMessage: error };
     }
 }

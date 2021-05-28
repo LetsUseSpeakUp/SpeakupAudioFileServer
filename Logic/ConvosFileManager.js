@@ -5,7 +5,7 @@
  * @returns 
  */
 const convertIdToFilePath = (convoId, extension = ".aac")=>{    
-    return ('./Uploaded_Convos' + convoId + extension);
+    return ('./Uploaded_Convos/' + convoId + extension);
 }
 
 exports.convertIdToFilePath = convertIdToFilePath;
