@@ -18,7 +18,7 @@ router.post('/', async (req, res)=>{
         })
     }
     else{        
-        const successInfo = UsersDatabase.createNewUser(phoneNumber, firstName, lastName);
+        const successInfo = await UsersDatabase.createNewUser(phoneNumber, firstName, lastName);
         console.log("/users/create. Successinfo: ", successInfo);
         if(successInfo.success){
             res.status(200).send({
