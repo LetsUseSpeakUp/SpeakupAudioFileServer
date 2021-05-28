@@ -71,7 +71,7 @@ const getConvoFilePath = async (convoId) => {
         return {success: true, filePath: filePath};
     }
     catch (error) {
-        return { success: false, errorMessage: error };
+        return { success: false, errorMessage: error }; 
     }
 }
 
