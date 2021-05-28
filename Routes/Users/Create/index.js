@@ -18,8 +18,7 @@ router.post('/', async (req, res)=>{
         })
     }
     else{        
-        const usersDatabase = new UsersDatabase();
-        const successInfo = await usersDatabase.createNewUser(phoneNumber, firstName, lastName);
+        const successInfo = UsersDatabase.createNewUser(phoneNumber, firstName, lastName);
         console.log("/users/create. Successinfo: ", successInfo);
         if(successInfo.success){
             res.status(200).send({
@@ -27,6 +26,7 @@ router.post('/', async (req, res)=>{
             });
         }
         else{
+            const userIdResponse = await  //TODO: Delete. just for testing
             res.status(500).send({
                 message: successInfo.errorMessage
             });
