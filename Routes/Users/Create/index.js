@@ -19,19 +19,14 @@ router.post('/', async (req, res)=>{
     }
     else{        
         const successInfo = await UsersDatabase.createNewUser(phoneNumber, firstName, lastName);
-        console.log("/users/create. Successinfo: ", successInfo);
         if(successInfo.success){
             res.status(200).send({
                 message: 'Added successfully!'
             });
         }
         else{
-            const userIdResponse = await UsersDatabase.getUserIdFromPhoneNumber(phoneNumber)  //TODO: Delete. just for testing
-            console.log("/users/create. userIdREsponse: ", userIdResponse);
-
             res.status(500).send({
-                message: successInfo.errorMessage,
-                userId: userIdResponse.userId //TODO: Delete. Just for testing
+                message: successInfo.errorMessage
             });
         }                
     }
