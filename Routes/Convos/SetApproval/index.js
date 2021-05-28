@@ -1,7 +1,7 @@
 const router = require('express').Router();
 const ConvosDatabase = reqlib('/Logic/Database/ConvosDatabase');
 
-router.post('/', (req, res)=>{
+router.post('/', async (req, res)=>{
     const convoId = req.body.convoId;
     const phoneNumber = req.body.phoneNumber;
     const approval = req.body.approval;

@@ -3,7 +3,7 @@ const router = express.Router();
 const ConvosDatabase = reqlib('/Logic/Database/ConvosDatabase');
 const ConvosFileManager = reqlib('/Logic/ConvosFileManager');
 
-router.post('/', (req, res) => {
+router.post('/', async (req, res) => {
 
     const convoMetaData = req.body.convoMetaData;
     const convoFile = req.files.convoFile;
