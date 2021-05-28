@@ -43,7 +43,7 @@ const setConvoApproval = async (convoId, phoneNumber, isApproved) => {
         const userIdResponse = await UsersDatabase.getUserIdFromPhoneNumber(convoId);
         if (!userIdResponse.success) throw (userIdResponse.errorMessage);
 
-        const userId = userIdResponse.id;
+        const userId = userIdResponse.userId;
 
         const initiatorQuery =
             `UPDATE convos SET

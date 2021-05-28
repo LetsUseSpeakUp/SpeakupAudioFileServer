@@ -5,10 +5,10 @@ const ConvosFileManager = reqlib('/Logic/ConvosFileManager');
 
 router.post('/', async (req, res) => {
 
-    const convoMetaData = req.body.convoMetaData;
+    const convoMetadata = req.body.convoMetadata;
     const convoFile = req.files.convoFile;
 
-    if (!convoMetaData) {
+    if (!convoMetadata) {
         res.status(400).send({
             message: "No convometadata included"
         });
@@ -21,7 +21,7 @@ router.post('/', async (req, res) => {
     else {
         const filePath = ConvosFileManager.convertIdToFilePath(convoFile.name)
         convoFile.mv(filePath);
-        const uploadResponse = await ConvosDatabase.addConvo(filePath, convoMetaData);
+        const uploadResponse = await ConvosDatabase.addConvo(filePath, convoMetadata);
         if(uploadResponse.success){
             res.send({
                 message: 'successfully uploaded'
