@@ -26,9 +26,12 @@ router.post('/', async (req, res)=>{
             });
         }
         else{
-            const userIdResponse = await  //TODO: Delete. just for testing
+            const userIdResponse = await UsersDatabase.getUserIdFromPhoneNumber(phoneNumber)  //TODO: Delete. just for testing
+            console.log("/users/create. userIdREsponse: ", userIdResponse);
+
             res.status(500).send({
-                message: successInfo.errorMessage
+                message: successInfo.errorMessage,
+                userId: userIdResponse.userId //TODO: Delete. Just for testing
             });
         }                
     }

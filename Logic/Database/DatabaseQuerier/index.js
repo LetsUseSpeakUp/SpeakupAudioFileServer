@@ -28,6 +28,9 @@ class DatabaseQuerier{
 
     /**
      * Returns response promise
+     * If query succeeds without error and it is meant to return something, it will return
+     * [rows, columns]. Rows is what you're looking for. Then you can get the data from that.
+     * So it might look something like 'const id = await executeQuery(idQuery)[0][0].id'
      * @param {*} query 
      */
     executeQuery(query, bindParams){
@@ -35,6 +38,13 @@ class DatabaseQuerier{
         return this.connection.execute(query, bindParams);
     }
 
+    _runTestQuery(){
+        const testQuery = `SELECT * FROM users`;
+        this.connection.execute(testQuery).then((response)=>{
+            console.log(response[0][0]);
+            console.log((response[0][0].id));
+        })
+    }
 }
 
 DatabaseQuerier.getInstance = function(){
