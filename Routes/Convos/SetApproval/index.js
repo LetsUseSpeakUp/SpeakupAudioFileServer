@@ -25,7 +25,7 @@ router.post('/', async (req, res)=>{
         const setApprovalResponse = await ConvosDatabase.setConvoApproval(convoId, phoneNumber, approval);
         if(setApprovalResponse.success){
             res.send({
-                message: 'Successfully approved'
+                message: `Successfully approved (or updated nothing if a param didn't match)`
             });
         }
         else{
