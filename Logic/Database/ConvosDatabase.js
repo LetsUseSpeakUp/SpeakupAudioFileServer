@@ -58,14 +58,17 @@ const setConvoApproval = async (convoId, phoneNumber, isApproved) => {
     }
 }
 
-const getConvoFilepath = async (convoId) => {
+const getConvoFilePath = async (convoId) => {
     try {
         const getFilepathQuery =
             `SELECT file_path FROM convos WHERE id=?`;
         const bindParams = [convoId];
 
-        const dbResponse = DBQuerier.executeQuery(getFilepathQuery, bindParams);
-        return (dbResponse[0][0].file_path);
+        const dbResponse = await DBQuerier.executeQuery(getFilepathQuery, bindParams);
+        if(dbResponse[0].length === 0) throw ('file path not found for convo id');
+        const filePath = (dbResponse[0][0].file_path);
+        if(!filePath) throw ('file path not found for convo id (2)');
+        return {success: true, filePath: filePath};
     }
     catch (error) {
         return { success: false, errorMessage: error };
@@ -129,5 +132,5 @@ const getAllConvosMetaDataForUser = async (phoneNumber) => {
 
 exports.addConvo = addConvo;
 exports.setConvoApproval = setConvoApproval;
-exports.getConvoFilepath = getConvoFilepath;
+exports.getConvoFilePath = getConvoFilePath;
 exports.getAllConvosMetaDataForUser = getAllConvosMetaDataForUser;

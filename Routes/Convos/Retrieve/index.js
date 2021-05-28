@@ -1,17 +1,26 @@
 const router = require('express').Router();
+const ConvosDatabase = reqlib('/Logic/Database/ConvosDatabase');
 
-router.get('/', (req, res)=>{
-    const convoId = req.query.convoId;
+
+router.post('/', async (req, res)=>{
+    const convoId = req.body.convoId;
     if(!convoId){
         res.status(400).send({
             message: 'No convo id provided'
         });
     }
     else{
-        const fileLink = 'dummyfilelink'; //TODO: DB
-        res.send({
-            fileLink: fileLink
-        });
+        const filePathResponse = await ConvosDatabase.getConvoFilePath(convoId);
+        console.log(filePathResponse);
+        if(filePathResponse.success){
+            const filePath = filePathResponse.filePath;
+            res.download(filePath);
+        }
+        else{
+            res.status(500).send({
+                message: filePathResponse.errorMessage
+            });
+        }        
     }
 })
 

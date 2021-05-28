@@ -1,7 +1,7 @@
 const router = require('express').Router();
 const ConvosDatabase = reqlib('/Logic/Database/ConvosDatabase');
 
-router.post('/allforuser', async (req, res)=>{
+router.get('/allforuser', async (req, res)=>{
     const phoneNumber = req.body.phoneNumber;
     if(!phoneNumber){
         res.status(400).send({
