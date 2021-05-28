@@ -12,7 +12,8 @@ router.post('/allforuser', async (req, res)=>{
         const metaDataResponse = await ConvosDatabase.getAllConvosMetaDataForUser(phoneNumber);
         if(metaDataResponse.success){            
             res.send({
-                metaData: metaDataResponse.metaData
+                metadataAsInitiator: metaDataResponse.metadataAsInitiator,
+                metadataAsReceiver: metaDataResponse.metadataAsReceiver
             });
         }
         else{            

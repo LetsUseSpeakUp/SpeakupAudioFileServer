@@ -78,8 +78,9 @@ const getAllConvosMetaDataForUser = async (phoneNumber) => {
         const initiatorQuery =
             `SELECT
                 users.phone_number AS receiver_phone_number, 
-                users.first_name as receiver_first_name,
-                users.last_name as receiver_last_name,
+                users.first_name AS receiver_first_name,
+                users.last_name AS receiver_last_name,
+                convos.id AS convo_id,
                 convos.timestamp_of_start,
                 convos.length,
                 convos.initiator_approval,
@@ -91,7 +92,7 @@ const getAllConvosMetaDataForUser = async (phoneNumber) => {
             ON
                 users.phone_number=convos.receiver_number
             AND
-                convos.initiator_id=?
+                convos.initiator_number=?
             `;
         
         const receiverQuery =
@@ -99,6 +100,7 @@ const getAllConvosMetaDataForUser = async (phoneNumber) => {
                 users.phone_number AS initiator_phone_number,
                 users.first_name AS initiator_first_name,
                 users.last_name AS initiator_last_name,
+                convos.id AS convo_id,
                 convos.timestamp_of_start,
                 convos.length,
                 convos.initiator_approval,
@@ -110,11 +112,13 @@ const getAllConvosMetaDataForUser = async (phoneNumber) => {
             ON
                 users.phone_number=convos.initiator_number
             AND
-                convos.receiver_id=?`;
+                convos.receiver_number=?`;
 
-            const bindParams = [userId];
+            const bindParams = [phoneNumber];
             const metadataAsInitiator = (await DBQuerier.executeQuery(initiatorQuery, bindParams))[0];
             const metadataAsReceiver = (await DBQuerier.executeQuery(receiverQuery, bindParams))[0];
+
+            console.log(metadataAsInitiator[0]);
 
             return {success: true, metadataAsInitiator: metadataAsInitiator, metadataAsReceiver: metadataAsReceiver};
     }
