@@ -11,6 +11,16 @@ router.post('/', async (req, res)=>{
             message: 'Phone number not provided'
         })
     }
+    else if(!firstName){
+        res.status(400).send({
+            message: 'First name not provided'
+        })
+    }
+    if(!lastName){
+        res.status(400).send({
+            message: 'last Name not provided'
+        })
+    }
     else{        
         const successInfo = await UsersDatabase.createNewUser(phoneNumber, firstName, lastName);
         if(successInfo.success){
