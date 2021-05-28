@@ -1,19 +1,29 @@
+const mysql = require('mysql2/promise')
+
 class DatabaseQuerier{
     endpoint = "localhost"
     username = "speakupuser"
     password = "speakuppassword"
+    databaseName = "speakup_v1"
+    connection
 
-    testSingleton = "memberVariable"
-    //TODO: Make this a singleton
 
     constructor(){
-        this.connectToDatabase();
-        this.testSingleton = "constructed";
+        this.connectToDatabase()
     }
 
     connectToDatabase(){
-        //TODO
-        //TODO: Console.log on error or success
+        mysql.createConnection({
+            host: this.endpoint,
+            user: this.username,
+            password: this.password,
+            database: this.databaseName
+        }).then((newConnection)=>{
+            this.connection = newConnection;
+            console.log("DatabaseQuerier. Connection to db created");
+        }).catch((error)=>{
+            console.log("ERROR - DatabaseQuerier. Failed to connect to db: ", error);
+        })
     }
 
     /**
