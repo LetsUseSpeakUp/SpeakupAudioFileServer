@@ -22,20 +22,4 @@ const createNewUser = (phoneNumber, firstName, lastName) => {
     })
 }
 
-const getUserIdFromPhoneNumber = (phoneNumber) => {
-    const getUserQuery =
-        `SELECT id FROM users WHERE phone_number=?`;
-    const bindParams = [phoneNumber];
-
-    return DBQuerier.executeQuery(getUserQuery, bindParams).then((queryResponse) => {  
-        if(queryResponse[0].length === 0) throw('user not found');
-        return { success: true, userId: queryResponse[0][0].id};
-    }).catch((error) => {
-        console.log("ERROR -- UserDatabase::getUserQuery: ", error);
-        return { success: false, errorMessage: error }
-    })
-}
-
-
 exports.createNewUser = createNewUser;
-exports.getUserIdFromPhoneNumber = getUserIdFromPhoneNumber;

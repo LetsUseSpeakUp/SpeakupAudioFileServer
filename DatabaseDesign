@@ -10,16 +10,16 @@ CREATE TABLE users (
 
 CREATE TABLE convos (
 	id VARCHAR(255) UNIQUE NOT NULL,
-	initiator_id INTEGER NOT NULL,
-	receiver_id INTEGER NOT NULL,
+	initiator_number VARCHAR(20) NOT NULL,
+	receiver_number VARCHAR(20) NOT NULL,
 	timestamp_of_start INTEGER NOT NULL,
 	length INTEGER NOT NULL,
 	file_path TEXT NULL,
 	initiator_approval INTEGER DEFAULT 0,
 	receiver_approval INTEGER DEFAULT 0,
-	FOREIGN KEY (initiator_id) REFERENCES users(id),
-	FOREIGN KEY (receiver_id) REFERENCES users(id)
-)
+	FOREIGN KEY (initiator_number) REFERENCES users(phone_number),
+	FOREIGN KEY (receiver_number) REFERENCES users(phone_number)
+);
 
 
 

@@ -1,34 +1,26 @@
 const DBQuerier = require('./DatabaseQuerier');
-const UsersDatabase = require('./UsersDatabase');
 /**
  * Returns a promise with success/failure
  * @param {*} convoFilePath 
- * @param {*} convoMetaData 
+ * @param {*} convoMetadata 
  * @returns 
  */
 
-const addConvo = async (convoFilePath, convoMetaData) => {
+const addConvo = async (convoFilePath, convoMetadata) => {
     try {
-        if (!convoMetaData.convoId) throw ('missing convoId from convoMetaData');
-        if (!convoMetaData.initiatorPhoneNumber) throw ('missing initiatorPhoneNumber from convoMetaData');
-        if (!convoMetaData.receiverPhoneNumber) throw ('missing receiverPhoneNumber from convoMetaData');
-        if (!convoMetaData.timestampOfStart) throw ('missing timestampOfStart from convoMetaData');
-        if (!convoMetaData.length) throw ('missing length from convoMetaData');
-
-        const initiatorIdResponse = await UsersDatabase.getUserIdFromPhoneNumber(convoMetaData.initiatorPhoneNumber);
-        if (!initiatorIdResponse.success) throw (initiatorIdResponse.errorMessage);
-        const initiatorId = initiatorIdResponse.id;
-
-        const receiverIdResponse = await UsersDatabase.getUserIdFromPhoneNumber(convoMetaData.receiverPhoneNumber);
-        if (!receiverIdResponse.success) throw (receiverIdResponse.errorMessage);
-        const receiverId = receiverIdResponse.id;
+        if (!convoMetadata.convoId) throw ('missing convoId from convoMetadata');
+        if (!convoMetadata.initiatorPhoneNumber) throw ('missing initiatorPhoneNumber from convoMetadata');
+        if (!convoMetadata.receiverPhoneNumber) throw ('missing receiverPhoneNumber from convoMetadata');
+        if (!convoMetadata.timestampOfStart) throw ('missing timestampOfStart from convoMetadata');
+        if (!convoMetadata.length) throw ('missing length from convoMetadata');
 
         const addConvoQuery =
             `INSERT INTO convos
-            (id, initiator_id, receiver_id, timestamp_of_start, length, file_path)
+            (id, initiator_number, receiver_number, timestamp_of_start, length, file_path)
         VALUES
             (?,?,?,?,?,?)`;
-        const bindParams = [convoMetaData.convoId, initiatorId, receiverId, convoMetaData.timestampOfStart, convoMetaData.length, convoFilePath];
+        const bindParams = [convoMetadata.convoId, convoMetadata.initiatorPhoneNumber, convoMetadata.receiverPhoneNumber,
+             convoMetadata.timestampOfStart, convoMetadata.length, convoFilePath];
 
         await DBQuerier.executeQuery(addConvoQuery, bindParams);
         return { success: true };
@@ -40,24 +32,20 @@ const addConvo = async (convoFilePath, convoMetaData) => {
 
 const setConvoApproval = async (convoId, phoneNumber, isApproved) => {
     try {
-        const userIdResponse = await UsersDatabase.getUserIdFromPhoneNumber(convoId);
-        if (!userIdResponse.success) throw (userIdResponse.errorMessage);
-
-        const userId = userIdResponse.userId;
-
+        
         const initiatorQuery =
             `UPDATE convos SET
                 initiator_approval=?
             WHERE
-                id=? AND initiator_id=?`;
+                id=? AND initiator_number=?`;
 
         const receiverQuery =
             `UPDATE convos SET
                 receiver_approval=?
             WHERE
-                id=? AND receiver_id=?`
+                id=? AND receiver_number=?`
 
-        const queryParams = [isApproved, convoId, userId];
+        const queryParams = [isApproved, convoId, phoneNumber];
         await DBQuerier.executeQuery(initiatorQuery, queryParams);
         await DBQuerier.executeQuery(receiverQuery, queryParams);
 
@@ -84,14 +72,10 @@ const getConvoFilepath = async (convoId) => {
 
 const getAllConvosMetaDataForUser = async (phoneNumber) => {
     try {
-        const userIdResponse = await UsersDatabase.getUserIdFromPhoneNumber(convoId);
-        if (!userIdResponse.success) throw (userIdResponse.errorMessage);
-
-        const userId = userIdResponse.id;
 
         const initiatorQuery =
             `SELECT
-                users.phone_number AS receiver_phone_number,
+                users.phone_number AS receiver_phone_number, 
                 users.first_name as receiver_first_name,
                 users.last_name as receiver_last_name,
                 convos.timestamp_of_start,
@@ -103,7 +87,7 @@ const getAllConvosMetaDataForUser = async (phoneNumber) => {
             JOIN
                 convos
             ON
-                users.id=convos.receiver_id
+                users.phone_number=convos.receiver_number
             AND
                 convos.initiator_id=?
             `;
@@ -122,7 +106,7 @@ const getAllConvosMetaDataForUser = async (phoneNumber) => {
             JOIN
                 convos
             ON
-                users.id=initiator_approval
+                users.phone_number=convos.initiator_number
             AND
                 convos.receiver_id=?`;
 
