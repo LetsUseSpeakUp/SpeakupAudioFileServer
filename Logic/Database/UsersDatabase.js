@@ -9,12 +9,16 @@ class UsersDatabase {
  * @param {*} firstName 
  * @param {*} lastName 
  */
-    async createNewUser(phoneNumber, firstName, lastName) {
-        const newUserQuery = ""; //TODO
-        // const response = await this.databaseQuerier.executeQuery(newUserQuery); 
+    createNewUser(phoneNumber, firstName, lastName) {
+        const newUserQuery = ""; //TODO        
 
-        const wasSuccessful = {success: false, errorMessage: 'dummy create user error message'} //TODO: Use response
-        return wasSuccessful;
+        return DBQuerier.executeQuery(newUserQuery).then((queryResponse)=>{
+            console.log("UsersDatabase::createNewUser. Response: ", response);
+            return {success: true};
+        }).catch((error)=>{
+            console.log("ERROR -- UserDatabase::createNewUser: ", error);
+            return {success: false, errorMessage: error}
+        })        
     }
 
     async getUserIdFromPhoneNumber(phoneNumber){

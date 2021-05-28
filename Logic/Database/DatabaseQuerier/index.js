@@ -31,7 +31,8 @@ class DatabaseQuerier{
      * @param {*} query 
      */
     executeQuery(query){
-        //TODO
+        console.log("DatabaseQuerier::executing query: ", query);
+        return this.connection.execute(query);
     }
 
 }
