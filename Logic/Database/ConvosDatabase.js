@@ -1,12 +1,12 @@
 const DBQuerier = require('./DatabaseQuerier')
 
-const addConvo = (convoFilePath, convoMetadata) => { //TODO: turn convometadata into object
-    const addConvoQuery = ""; //TODO
-    const response = await this.databaseQuerier.executeQuery(addConvoQuery);
+const addConvo = (convoFilePath, convoMetaData) => { 
+    const addConvoQuery = ``; //TODO
+
 
     const wasSuccessful; //TODO: parse response
     return wasSuccessful;
-}
+} //{convoId, initiatorPhoneNumber, receiverPhoneNumber, timestampOfStart, length}
 
 const setConvoApproval = (convoId, phoneNumber, isApproved) => {
     const userId; //TODO: Convert phoneNumber into user id

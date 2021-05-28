@@ -1,4 +1,5 @@
 const router = require('express').Router();
+const ConvosDatabase = reqlib('/Logic/Database/ConvosDatabase');
 
 router.post('/', (req, res)=>{
     const convoId = req.body.convoId;
@@ -18,14 +19,20 @@ router.post('/', (req, res)=>{
     else if (!approval){
         res.status(400).send({
             message: 'No approval set'
-        })
+        });
     }
     else{
-        //TODO: Get from DB
-        res.send({
-            message: ('convoId ', convoId + ' had approval status ' + approval
-            + " set by " + phoneNumber)
-        })
+        const setApprovalResponse = await ConvosDatabase.setConvoApproval(convoId, phoneNumber, approval);
+        if(setApprovalResponse.success){
+            res.send({
+                message: 'Successfully approved'
+            });
+        }
+        else{
+            res.status(500).send({
+                message: setApprovalResponse.errorMessage
+            });
+        }        
     }
 })
 

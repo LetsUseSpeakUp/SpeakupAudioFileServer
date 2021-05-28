@@ -1,4 +1,5 @@
 const router = require('express').Router();
+const ConvosDatabase = reqlib('/Logic/Database/ConvosDatabase');
 
 router.get('/allforuser', (req, res)=>{
     const phoneNumber = req.query.phoneNumber;
@@ -8,11 +9,17 @@ router.get('/allforuser', (req, res)=>{
         });
     }
     else{
-        //TODO: Get metadata from DB
-        const metaData = "dummyMetaData";
-        res.send({
-            metaData: metaData
-        });
+        const metaDataResponse = await ConvosDatabase.getAllConvosMetaDataForUser(phoneNumber);
+        if(metaDataResponse.success){            
+            res.send({
+                metaData: metaDataResponse.metaData
+            });
+        }
+        else{            
+            res.status(500).send({
+                message: metaDataResponse.errorMessage
+            });
+        }
     }
 })
 

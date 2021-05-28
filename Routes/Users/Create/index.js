@@ -1,12 +1,6 @@
 const router = require('express').Router();
 const UsersDatabase = reqlib('/Logic/Database/UsersDatabase');
 
-router.get('/', (req, res)=>{
-    res.send({
-        message: '/users/create get'
-    });
-})
-
 router.post('/', async (req, res)=>{
     const phoneNumber = req.body.phoneNumber;
     const firstName = req.body.firstName;
