@@ -1,7 +1,5 @@
 const DBQuerier = require('./DatabaseQuerier')
 
-
-
 /**
 * Returns promise that has an object that says success or (failure and error message)
 * @param {*} phoneNumber 
