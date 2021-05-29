@@ -71,7 +71,7 @@ const getConvoFilePath = async (convoId) => {
         return {success: true, filePath: filePath};
     }
     catch (error) {
-        return { success: false, errorMessage: error }; 
+        return { success: false, errorMessage: error };
     }
 }
 
@@ -83,6 +83,7 @@ const getAllConvosMetaDataForUser = async (phoneNumber) => {
                 users.phone_number AS receiver_phone_number, 
                 users.first_name AS receiver_first_name,
                 users.last_name AS receiver_last_name,
+                convos.initiator_number AS initiator_phone_number,
                 convos.id AS convo_id,
                 convos.timestamp_of_start,
                 convos.length,
@@ -103,6 +104,7 @@ const getAllConvosMetaDataForUser = async (phoneNumber) => {
                 users.phone_number AS initiator_phone_number,
                 users.first_name AS initiator_first_name,
                 users.last_name AS initiator_last_name,
+                convos.receiver_number AS receiver_phone_number,
                 convos.id AS convo_id,
                 convos.timestamp_of_start,
                 convos.length,
