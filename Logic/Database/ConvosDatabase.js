@@ -8,7 +8,8 @@ const DBQuerier = require('./DatabaseQuerier');
 
 const addConvo = async (convoFilePath, convoMetadataString) => {
     try {
-        const convoMetadata = JSON.parse(convoMetadataString);
+        const convoMetadata = convertConvoMetadataFromClientToServerFormat(JSON.parse(convoMetadataString));        
+
         if (!convoMetadata.convoId) throw ('missing convoId from convoMetadata');
         if (!convoMetadata.initiatorPhoneNumber) throw ('missing initiatorPhoneNumber from convoMetadata');
         if (!convoMetadata.receiverPhoneNumber) throw ('missing receiverPhoneNumber from convoMetadata');
@@ -30,6 +31,21 @@ const addConvo = async (convoFilePath, convoMetadataString) => {
         console.log("ConvosDatabase::addConvo. Error: ", error);
         return { success: false, errorMessage: error };
     }
+}
+
+/**
+ * TODO: We need to make a common file between these so
+ * we don't have to deal with this in the future
+ * @param {*} clientFormatMetadata 
+ * @returns 
+ */
+const convertConvoMetadataFromClientToServerFormat = (clientFormatMetadata)=>{
+    if(!clientFormatMetadata.initiatorPhoneNumber) clientFormatMetadata.initiatorPhoneNumber = clientFormatMetadata.initiatorId;
+    if(!clientFormatMetadata.receiverPhoneNumber) clientFormatMetadata.receiverPhoneNumber = clientFormatMetadata.receiverId;
+    if(!clientFormatMetadata.timestampOfStart) clientFormatMetadata.timestampOfStart = clientFormatMetadata.timestampStarted;
+    if(!clientFormatMetadata.length) clientFormatMetadata.length = clientFormatMetadata.convoLength;
+
+    return clientFormatMetadata;
 }
 
 const setConvoApproval = async (convoId, phoneNumber, isApproved) => {
