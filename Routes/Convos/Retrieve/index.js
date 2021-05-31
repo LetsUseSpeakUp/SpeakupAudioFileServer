@@ -10,6 +10,7 @@ router.post('/', async (req, res)=>{
         });
     }
     else{
+        //TODO: Check if it's double approved before retrieving
         const filePathResponse = await ConvosDatabase.getConvoFilePath(convoId);
         console.log(filePathResponse);
         if(filePathResponse.success){

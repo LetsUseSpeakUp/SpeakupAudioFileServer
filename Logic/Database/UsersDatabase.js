@@ -22,4 +22,24 @@ const createNewUser = (phoneNumber, firstName, lastName) => {
     })
 }
 
+const getUserInfo = (phoneNumber) => {
+    const getUserQuery = 
+    `SELECT
+        first_name,
+        last_name  
+    FROM users
+    WHERE phone_number=?`;
+    const bindParams = [phoneNumber];
+
+    return DBQuerier.executeQuery(getUserQuery, bindParams).then((queryResponse) => {
+        if(queryResponse[0].length === 0)
+            throw('no users found');
+        return {success: true, firstName: queryResponse[0][0].first_name, lastName: queryResponse[0][0].last_name};
+    }).catch((error) => {
+        console.log("ERROR -- UserDatabase::getUserInfo: ", error);
+        return { success: false, errorMessage: error }
+    })
+}
+
 exports.createNewUser = createNewUser;
+exports.getUserInfo = getUserInfo;
