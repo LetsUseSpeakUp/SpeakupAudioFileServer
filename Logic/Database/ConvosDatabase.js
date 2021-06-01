@@ -63,14 +63,34 @@ const setConvoApproval = async (convoId, phoneNumber, isApproved) => {
             WHERE
                 id=? AND receiver_number=?`
 
-        const queryParams = [isApproved, convoId, phoneNumber];
-        await DBQuerier.executeQuery(initiatorQuery, queryParams);
-        await DBQuerier.executeQuery(receiverQuery, queryParams);
+        const bindParams = [isApproved, convoId, phoneNumber];
+        await DBQuerier.executeQuery(initiatorQuery, bindParams);
+        await DBQuerier.executeQuery(receiverQuery, bindParams);
 
         return { success: true }
     }
     catch (error) {
         return { success: false, errorMessage: error };
+    }
+}
+
+const getConvoApprovalInfo = async (convoId)=>{
+    try{
+        const approvalInfoQuery = 
+        `SELECT initiator_approval, receiver_approval
+        FROM convos WHERE id=?`;
+
+        const bindParams = [convoId];
+        const dbResponse = await DBQuerier.executeQuery(approvalInfoQuery, bindParams);
+        if(dbResponse[0].length === 0) throw ('convo with convo id not found');
+
+        const initiatorApproval = dbResponse[0][0].initiator_approval;
+        const receiverApproval = dbResponse[0][0].receiver_approval;
+
+        return {success: true, initiatorApproval: initiatorApproval, receiverApproval: receiverApproval};
+    }
+    catch(error){
+        return{success: false, errorMessage: error}
     }
 }
 
@@ -152,3 +172,4 @@ exports.addConvo = addConvo;
 exports.setConvoApproval = setConvoApproval;
 exports.getConvoFilePath = getConvoFilePath;
 exports.getAllConvosMetaDataForUser = getAllConvosMetaDataForUser;
+exports.getConvoApprovalInfo = getConvoApprovalInfo;

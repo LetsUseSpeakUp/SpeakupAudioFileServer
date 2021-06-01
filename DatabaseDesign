@@ -12,7 +12,7 @@ CREATE TABLE convos (
 	id VARCHAR(255) UNIQUE NOT NULL,
 	initiator_number VARCHAR(20) NOT NULL,
 	receiver_number VARCHAR(20) NOT NULL,
-	timestamp_of_start INTEGER NOT NULL,
+	timestamp_of_start BIGINT NOT NULL,
 	length INTEGER NOT NULL,
 	file_path TEXT NULL,
 	initiator_approval INTEGER DEFAULT 0,
