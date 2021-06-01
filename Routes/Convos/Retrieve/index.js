@@ -2,8 +2,9 @@ const router = require('express').Router();
 const ConvosDatabase = reqlib('/Logic/Database/ConvosDatabase');
 
 
-router.post('/', async (req, res)=>{
-    const convoId = req.body.convoId;
+router.get('/', async (req, res)=>{
+    const convoId = req.query.convoId;
+        
     if(!convoId){
         res.status(400).send({
             message: 'No convo id provided'
