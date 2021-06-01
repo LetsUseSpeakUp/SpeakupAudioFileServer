@@ -10,7 +10,26 @@ router.post('/', async (req, res)=>{
         });
     }
     else{
-        //TODO: Check if it's double approved before retrieving
+        const approvalResponse = await ConvosDatabase.getConvoApprovalInfo(convoId); 
+        if(!approvalResponse.success){
+            res.status(500).send({
+                message: approvalResponse.errorMessage
+            });
+            return;
+        }
+        if(approvalResponse.initiatorApproval != 1){
+            res.status(500).send({
+                message: "initiator didn't approve"
+            });
+            return;
+        }
+        if(approvalResponse.receiverApproval != 1){
+            res.status(500).send({
+                message: "receiver didn't approve"
+            });
+            return;
+        }
+
         const filePathResponse = await ConvosDatabase.getConvoFilePath(convoId);
         console.log(filePathResponse);
         if(filePathResponse.success){

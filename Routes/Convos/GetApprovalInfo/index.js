@@ -10,16 +10,16 @@ router.post('/', async (req, res)=>{
         });
     }
     else{
-        const setApprovalResponse = await ConvosDatabase.getConvoApprovalInfo(convoId); 
-        if(setApprovalResponse.success){
+        const getApprovalResponse = await ConvosDatabase.getConvoApprovalInfo(convoId); 
+        if(getApprovalResponse.success){
             res.send({
-                initiatorApproval: setApprovalResponse.initiatorApproval,
-                receiverApproval: setApprovalResponse.receiverApproval
+                initiatorApproval: getApprovalResponse.initiatorApproval,
+                receiverApproval: getApprovalResponse.receiverApproval
             });
         }
         else{
             res.status(500).send({
-                message: setApprovalResponse.errorMessage
+                message: getApprovalResponse.errorMessage
             });
         }        
     }
