@@ -9,6 +9,7 @@ class DatabaseQuerier{
 
 
     constructor(){
+        console.log("DatabaseQuerier. Env val: ", process.env.TEST_VAL);
         this.connectToDatabase()
     }
 
