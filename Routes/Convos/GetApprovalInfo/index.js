@@ -8,6 +8,7 @@ router.post('/', async (req, res)=>{
         res.status(400).send({
             message: 'No convo id set'
         });
+        return;
     }
     else{
         const getApprovalResponse = await ConvosDatabase.getConvoApprovalInfo(convoId); 
@@ -16,11 +17,13 @@ router.post('/', async (req, res)=>{
                 initiatorApproval: getApprovalResponse.initiatorApproval,
                 receiverApproval: getApprovalResponse.receiverApproval
             });
+            return;
         }
         else{
             res.status(500).send({
                 message: getApprovalResponse.errorMessage
             });
+            return;
         }        
     }
 })

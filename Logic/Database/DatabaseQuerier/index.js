@@ -34,7 +34,15 @@ class DatabaseQuerier{
      * @param {*} query 
      */
     executeQuery(query, bindParams){
-        console.log("DatabaseQuerier::executing query: ", query, " with params: ", bindParams);
+        console.log("DatabaseQuerier::executeQuery: ", query, " with params: ", bindParams);
+        let i;
+        for(i = 0; i < bindParams.length; i++){
+            if(bindParams[i] == null){
+                console.log("ERROR - DatabaseQuerier::executeQuery. Bind params null");
+                throw 'null bind param';
+            }             
+        }
+        console.log("DatabaseQuerier::executeQuery. Executing");
         return this.connection.execute(query, bindParams);
     }
 

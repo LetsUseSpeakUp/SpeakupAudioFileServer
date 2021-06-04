@@ -12,11 +12,13 @@ router.post('/', async (req, res) => {
         res.status(400).send({
             message: "No convometadata included"
         });
+        return;
     }
     else if (!convoFile) {
         res.status(400).send({
             message: "No convoFile included"
         });
+        return;
     }
     else {
         const metadata = JSON.parse(convoMetadata);
@@ -28,11 +30,13 @@ router.post('/', async (req, res) => {
             res.send({
                 message: 'successfully uploaded'
             });
+            return;
         }
         else{
             res.status(500).send({
                 message: uploadResponse.errorMessage
             });
+            return;
         }
     }
 })

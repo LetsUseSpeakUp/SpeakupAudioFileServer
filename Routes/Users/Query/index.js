@@ -7,6 +7,7 @@ router.post('/', async (req, res)=>{
         res.status(400).send({
             message: 'phone number not set'
         })
+        return;
     }
     else{        
         const successInfo = await UsersDatabase.getUserInfo(phoneNumber);
@@ -15,11 +16,13 @@ router.post('/', async (req, res)=>{
                 firstName: successInfo.firstName,
                 lastName: successInfo.lastName
             });
+            return;
         }
         else{
             res.status(500).send({
                 message: successInfo.errorMessage
             });
+            return;
         }         
     }
 })

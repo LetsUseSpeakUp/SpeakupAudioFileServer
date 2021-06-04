@@ -9,6 +9,7 @@ router.get('/', async (req, res)=>{
         res.status(400).send({
             message: 'No convo id provided'
         });
+        return;
     }
     else{
         const approvalResponse = await ConvosDatabase.getConvoApprovalInfo(convoId); 
@@ -36,11 +37,13 @@ router.get('/', async (req, res)=>{
         if(filePathResponse.success){
             const filePath = filePathResponse.filePath;
             res.download(filePath);
+            return;
         }
         else{
             res.status(500).send({
                 message: filePathResponse.errorMessage
             });
+            return;
         }        
     }
 })
