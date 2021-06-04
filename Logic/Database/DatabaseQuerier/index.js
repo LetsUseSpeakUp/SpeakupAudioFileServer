@@ -1,15 +1,14 @@
 const mysql = require('mysql2/promise')
 
 class DatabaseQuerier{
-    endpoint = "localhost"
-    username = "speakupuser"
-    password = "speakuppassword"
-    databaseName = "speakup_v1"
+    endpoint = process.env.DB_ENDPOINT;
+    username = process.env.DB_USER;
+    password = process.env.DB_PASSWORD;
+    databaseName = process.env.DB_NAME;
     connection
 
 
     constructor(){
-        console.log("DatabaseQuerier. Env val: ", process.env.TEST_VAL);
         this.connectToDatabase()
     }
 
