@@ -18,7 +18,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(morgan('dev'));
 
-const port = process.env.PORT || 3999;
+const port = process.env.PORT || 1234;
 
 
 app.listen(port,  ()=>{
