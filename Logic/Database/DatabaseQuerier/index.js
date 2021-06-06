@@ -1,51 +1,22 @@
 const mysql = require('mysql2/promise')
 
-class DatabaseQuerier {
+class DatabaseQuerier { //TODO: Refactor this to be a module with functions instead of a class. No need to be a class now that we're connecting to db on each query
     endpoint = process.env.DB_ENDPOINT;
     username = process.env.DB_USER;
     password = process.env.DB_PASSWORD;
     databaseName = process.env.DB_NAME;
-    connection
-
 
     constructor() {
-        this.connectToDatabase()
     }
 
-    connectToDatabase() {
-        mysql.createConnection({
+    connectToDatabase(){
+        return mysql.createConnection({
             host: this.endpoint,
             user: this.username,
             password: this.password,
             database: this.databaseName
-        }).then((newConnection) => {
-            this.connection = newConnection;            
-            console.log("DatabaseQuerier. Connection to db created");
-            this.connection.on('error', (error)=>{
-                console.log("ERROR -- DatabaseQuerier. Connection threw error: ", error);
-                destroyAndReconnect(this.connection);            
-            })
-        }).catch((error) => {
-            console.log("ERROR - DatabaseQuerier. Failed to connect to db: ", error);
-            destroyAndReconnect(this.connection);
-        });
-
-        
-
-        const destroyAndReconnect = async (connection)=>{
-            try{
-                if(connection) await connection.destroy();
-                setTimeout(()=>{
-                    console.log("DatabaseQuerier. Destroyed connection. Attempting to reconnect in 2 seconds");
-                    this.connectToDatabase();
-                }, 2000)            
-            }
-            catch(error){
-                console.log("ERROR -- DatabaseQuerier: ", error);
-            }                                        
-        }
-
-    }
+        })
+    }    
 
     /**
      * Returns response promise
@@ -54,8 +25,8 @@ class DatabaseQuerier {
      * So it might look something like 'const id = await executeQuery(idQuery)[0][0].id'
      * @param {*} query 
      */
-    executeQuery(query, bindParams) {
-        console.log("DatabaseQuerier::executeQuery: ", query, " with params: ", bindParams);
+    async executeQuery(query, bindParams, retrying = false) {
+        console.log("DatabaseQuerier::executeQuery: ", query, " with params: ", bindParams, " retrying: ", retrying);
         let i;
         for (i = 0; i < bindParams.length; i++) {
             if (bindParams[i] == null) {
@@ -63,13 +34,16 @@ class DatabaseQuerier {
                 throw 'null bind param';
             }
         }
+
         console.log("DatabaseQuerier::executeQuery. Executing");
-        return this.connection.execute(query, bindParams);
+        const databaseConnection = await this.connectToDatabase();
+        return await databaseConnection.execute(query, bindParams);       
     }
 
-    _runTestQuery() {
+    async _runTestQuery() {
+        const databaseConnection = await this.connectToDatabase();
         const testQuery = `SELECT * FROM users`;
-        this.connection.execute(testQuery).then((response) => {
+        databaseConnection.execute(testQuery).then((response) => {
             console.log(response[0][0]);
             console.log((response[0][0].id));
         })
