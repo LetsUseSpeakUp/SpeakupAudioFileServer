@@ -13,33 +13,36 @@ class DatabaseQuerier {
     }
 
     connectToDatabase() {
-        const connection = mysql.createConnection({
+        mysql.createConnection({
             host: this.endpoint,
             user: this.username,
             password: this.password,
             database: this.databaseName
         }).then((newConnection) => {
-            this.connection = newConnection;
+            this.connection = newConnection;            
             console.log("DatabaseQuerier. Connection to db created");
+            this.connection.on('error', (error)=>{
+                console.log("ERROR -- DatabaseQuerier. Connection threw error: ", error);
+                destroyAndReconnect(this.connection);            
+            })
         }).catch((error) => {
             console.log("ERROR - DatabaseQuerier. Failed to connect to db: ", error);
-            destroyAndReconnect(connection);
+            destroyAndReconnect(this.connection);
         });
 
-        connection.on('error', (error)=>{
-            console.log("ERROR -- DatabaseQuerier. Connection threw error: ", error);
-            destroyAndReconnect(connection);            
-        })
+        
 
-        const destroyAndReconnect = (connection)=>{
-            connection.destroy().then(()=>{
+        const destroyAndReconnect = async (connection)=>{
+            try{
+                if(connection) await connection.destroy();
                 setTimeout(()=>{
                     console.log("DatabaseQuerier. Destroyed connection. Attempting to reconnect in 2 seconds");
                     this.connectToDatabase();
-                }, 2000)
-            }).catch(error=>{
-                console.log("ERROR -- DatabaseQuerier")
-            })
+                }, 2000)            
+            }
+            catch(error){
+                console.log("ERROR -- DatabaseQuerier: ", error);
+            }                                        
         }
 
     }
