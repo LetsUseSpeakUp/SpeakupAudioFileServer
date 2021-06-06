@@ -11,7 +11,7 @@ const checkJwt = jwt({
     }),
       
     // audience: 'letsusespeakup.com', 
-    audience: 'https://letsusespeakup.us.auth0.com/api/v2/', //TODO: Change to above
+    audience: 'https://letsusespeakup.us.auth0.com/api/v2/', //TODO: Issue a special token for above endpoint. Until then, this is fine
     issuer: 'https://letsusespeakup.us.auth0.com/',
     algorithms: [ 'RS256' ]
 });
