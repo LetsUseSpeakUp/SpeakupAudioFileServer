@@ -12,39 +12,46 @@ class DatabaseQuerier {
         this.connectToDatabase()
     }
 
-    connectToDatabase() {
-        mysql.createConnection({
+    connectToDatabasePromise(){
+        return mysql.createConnection({
             host: this.endpoint,
             user: this.username,
             password: this.password,
             database: this.databaseName
-        }).then((newConnection) => {
+        })
+    }
+
+    connectToDatabase() {
+        this.connectToDatabasePromise().then((newConnection) => {
             this.connection = newConnection;            
             console.log("DatabaseQuerier. Connection to db created");
-            this.connection.on('error', (error)=>{
-                console.log("ERROR -- DatabaseQuerier. Connection threw error: ", error);
-                destroyAndReconnect(this.connection);            
-            })
         }).catch((error) => {
             console.log("ERROR - DatabaseQuerier. Failed to connect to db: ", error);
-            destroyAndReconnect(this.connection);
-        });
+            this.destroyAndReconnect();
+        });                
+    }
 
-        
-
-        const destroyAndReconnect = async (connection)=>{
-            try{
-                if(connection) await connection.destroy();
-                setTimeout(()=>{
-                    console.log("DatabaseQuerier. Destroyed connection. Attempting to reconnect in 2 seconds");
-                    this.connectToDatabase();
-                }, 2000)            
-            }
-            catch(error){
-                console.log("ERROR -- DatabaseQuerier: ", error);
-            }                                        
+    destroyAndReconnect = async ()=>{
+        try{
+            if(this.connection) await this.connection.destroy();
+            setTimeout(()=>{
+                console.log("DatabaseQuerier. Destroyed connection. Attempting to reconnect in 2 seconds");
+                this.connectToDatabase();
+            }, 2000)            
         }
+        catch(error){
+            console.log("ERROR -- DatabaseQuerier: ", error);
+        }                                        
+    }
 
+    destroyAndReconnectSingleAttempt = async()=>{
+        try{
+            if(this.connection) await this.connection.destroy();
+            this.connection = await this.connectToDatabasePromise();
+        }
+        catch(error){
+            console.log("ERROR -- DatabaseQuerier::destroyAndReconnectSingleAttempt: ", error);
+        } 
     }
 
     /**
@@ -54,8 +61,8 @@ class DatabaseQuerier {
      * So it might look something like 'const id = await executeQuery(idQuery)[0][0].id'
      * @param {*} query 
      */
-    executeQuery(query, bindParams) {
-        console.log("DatabaseQuerier::executeQuery: ", query, " with params: ", bindParams);
+    async executeQuery(query, bindParams, retrying = false) {
+        console.log("DatabaseQuerier::executeQuery: ", query, " with params: ", bindParams, " retrying: ", retrying);
         let i;
         for (i = 0; i < bindParams.length; i++) {
             if (bindParams[i] == null) {
@@ -64,7 +71,19 @@ class DatabaseQuerier {
             }
         }
         console.log("DatabaseQuerier::executeQuery. Executing");
-        return this.connection.execute(query, bindParams);
+        try{
+            return await this.connection.execute(query, bindParams);
+        }
+        catch(error){
+            console.log("ERROR -- DatabaseQuerier::executeQuery: ", error);
+            if(error.code === 'ETIMEDOUT' && !retrying){
+                await this.destroyAndReconnectSingleAttempt();
+                return await this.executeQuery(query, bindParams, true);
+            }           
+            else{
+                throw error;
+            }
+        }
     }
 
     _runTestQuery() {
