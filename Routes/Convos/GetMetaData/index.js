@@ -7,6 +7,7 @@ router.post('/allforuser', async (req, res)=>{
         res.status(400).send({
             message: 'phone number not set'
         });
+        return;
     }
     else{
         const metaDataResponse = await ConvosDatabase.getAllConvosMetaDataForUser(phoneNumber);
@@ -15,11 +16,13 @@ router.post('/allforuser', async (req, res)=>{
                 metadataAsInitiator: metaDataResponse.metadataAsInitiator,
                 metadataAsReceiver: metaDataResponse.metadataAsReceiver
             });
+            return;
         }
         else{            
             res.status(500).send({
                 message: metaDataResponse.errorMessage
             });
+            return;
         }
     }
 })

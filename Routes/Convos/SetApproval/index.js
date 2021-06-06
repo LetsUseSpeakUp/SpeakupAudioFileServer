@@ -10,16 +10,19 @@ router.post('/', async (req, res)=>{
         res.status(400).send({
             message: 'No convo id set'
         });
+        return;
     }
     else if(!phoneNumber){
         res.status(400).send({
             message: 'No phone number set'
         });
+        return;
     }
     else if (!approval){
         res.status(400).send({
             message: 'No approval set'
         });
+        return;
     }
     else{
         const setApprovalResponse = await ConvosDatabase.setConvoApproval(convoId, phoneNumber, approval);
@@ -27,11 +30,13 @@ router.post('/', async (req, res)=>{
             res.send({
                 message: `Successfully approved (or updated nothing if a param didn't match)`
             });
+            return;
         }
         else{
             res.status(500).send({
                 message: setApprovalResponse.errorMessage
             });
+            return;
         }        
     }
 })

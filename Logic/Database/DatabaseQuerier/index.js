@@ -1,6 +1,6 @@
 const mysql = require('mysql2/promise')
 
-class DatabaseQuerier{
+class DatabaseQuerier {
     endpoint = process.env.DB_ENDPOINT;
     username = process.env.DB_USER;
     password = process.env.DB_PASSWORD;
@@ -8,22 +8,40 @@ class DatabaseQuerier{
     connection
 
 
-    constructor(){
+    constructor() {
         this.connectToDatabase()
     }
 
-    connectToDatabase(){
-        mysql.createConnection({
+    connectToDatabase() {
+        const connection = mysql.createConnection({
             host: this.endpoint,
             user: this.username,
             password: this.password,
             database: this.databaseName
-        }).then((newConnection)=>{
+        }).then((newConnection) => {
             this.connection = newConnection;
             console.log("DatabaseQuerier. Connection to db created");
-        }).catch((error)=>{
+        }).catch((error) => {
             console.log("ERROR - DatabaseQuerier. Failed to connect to db: ", error);
+            destroyAndReconnect(connection);
+        });
+
+        connection.on('error', (error)=>{
+            console.log("ERROR -- DatabaseQuerier. Connection threw error: ", error);
+            destroyAndReconnect(connection);            
         })
+
+        const destroyAndReconnect = (connection)=>{
+            connection.destroy().then(()=>{
+                setTimeout(()=>{
+                    console.log("DatabaseQuerier. Destroyed connection. Attempting to reconnect in 2 seconds");
+                    this.connectToDatabase();
+                }, 2000)
+            }).catch(error=>{
+                console.log("ERROR -- DatabaseQuerier")
+            })
+        }
+
     }
 
     /**
@@ -33,30 +51,30 @@ class DatabaseQuerier{
      * So it might look something like 'const id = await executeQuery(idQuery)[0][0].id'
      * @param {*} query 
      */
-    executeQuery(query, bindParams){
+    executeQuery(query, bindParams) {
         console.log("DatabaseQuerier::executeQuery: ", query, " with params: ", bindParams);
         let i;
-        for(i = 0; i < bindParams.length; i++){
-            if(bindParams[i] == null){
+        for (i = 0; i < bindParams.length; i++) {
+            if (bindParams[i] == null) {
                 console.log("ERROR - DatabaseQuerier::executeQuery. Bind params null");
                 throw 'null bind param';
-            }             
+            }
         }
         console.log("DatabaseQuerier::executeQuery. Executing");
         return this.connection.execute(query, bindParams);
     }
 
-    _runTestQuery(){
+    _runTestQuery() {
         const testQuery = `SELECT * FROM users`;
-        this.connection.execute(testQuery).then((response)=>{
+        this.connection.execute(testQuery).then((response) => {
             console.log(response[0][0]);
             console.log((response[0][0].id));
         })
     }
 }
 
-DatabaseQuerier.getInstance = function(){
-    if(global.DatabaseQuerier_instance === undefined){
+DatabaseQuerier.getInstance = function () {
+    if (global.DatabaseQuerier_instance === undefined) {
         global.DatabaseQuerier_instance = new DatabaseQuerier();
     }
     return global.DatabaseQuerier_instance;
