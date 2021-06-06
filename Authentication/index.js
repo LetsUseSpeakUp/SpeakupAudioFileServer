@@ -9,9 +9,9 @@ const checkJwt = jwt({
       jwksRequestsPerMinute: 5,
       jwksUri: `https://letsusespeakup.us.auth0.com/.well-known/jwks.json`
     }),
-  
-    // Validate the audience and the issuer
-    audience: '{YOUR_API_IDENTIFIER}', //replace with your API's audience, available at Dashboard > APIs
+      
+    // audience: 'letsusespeakup.com', 
+    audience: 'https://letsusespeakup.us.auth0.com/api/v2/', //TODO: Change to above
     issuer: 'https://letsusespeakup.us.auth0.com/',
     algorithms: [ 'RS256' ]
 });
