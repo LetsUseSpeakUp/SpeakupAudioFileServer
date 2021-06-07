@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const ConvosDatabase = require('../../../Logic/Database/ConvosDatabase');
-const ConvosFileManager = require('../../../Logic/Database/ConvosDatabase')
+const ConvosFileManager = require('../../../Logic/ConvosFileManager')
 
 router.post('/', async (req, res) => {
 
@@ -29,7 +29,7 @@ router.post('/', async (req, res) => {
         });
     }
 
-    const getApprovalResponse = await ConvosDatabase.getConvoApprovalInfo(convoId);
+    const getApprovalResponse = await ConvosDatabase.getConvoApprovalInfo(metadata.convoId);
     if(getApprovalResponse.initiatorNumber !== phoneNumber && getApprovalResponse.receiverNumber !== phoneNumber){
         return res.status(500).send({
             message: 'invalid phone number'
