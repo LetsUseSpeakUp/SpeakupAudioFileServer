@@ -1,31 +1,40 @@
 const router = require('express').Router();
 const {RtcTokenBuilder, RtcRole} = require('agora-access-token')
+const {addStartedConvo} = require('../../Logic/Database/ConvosDatabase');
 
 const APP_ID = process.env.APP_ID;
 const APP_CERTIFICATE = process.env.APP_CERTIFICATE;
 
 router.post('/getchanneltoken', async(req, res)=>{        
     const channelName = req.body.channel;
-    const initiator_number = req.body.initiator_number;
-    const receiver_number = req.body.receiver_number;
+    const isInitiator = (req.body.isInitiator.toLowerCase() === 'true');
+    const phone_number = req.user['https://backend.letsusespeakup.com/token/usermetadata/phone_number'] 
+        || req.user['https://backend.letsusespeakup.com/token/usermetadata/metadata'].phone_number;
+
+    const first_name = req.user['https://backend.letsusespeakup.com/token/usermetadata/metadata'].first_name;
+    const last_name = req.user['https://backend.letsusespeakup.com/token/usermetadata/metadata'].last_name;    
+    
     if(!channelName){
         return res.status(500).send({
             message: 'no channel name'
         });
     }
-    if(!initiator_number){
+    if(isInitiator == null){
         return res.status(500).send({
-            message: 'no initiator number'
+            message: 'is initiator not set'
         });
     }
-    if(!receiver_number){
+    if(!phone_number){
         return res.status(500).send({
-            message: 'no receiver number'
+            message: 'no phone number'
         });
     }    
     //TODO: Verify that user phone number is part of channel name
-    
-    //TODO: Write to DB
+    console.log("/Tokens/getchannelToken. is initiator: ", isInitiator);
+    const addConvoResponse = await addStartedConvo(channelName, isInitiator, phone_number, first_name, last_name);
+    if(!addConvoResponse.success) return res.status(500).send({
+        message: addConvoResponse.errorMessage
+    });
 
     let uid = req.body.uid;
     if(!uid) uid = 0;

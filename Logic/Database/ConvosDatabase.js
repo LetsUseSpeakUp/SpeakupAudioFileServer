@@ -33,9 +33,11 @@ const finalizeConvo = async (convoFilePath, convoMetadataString) => {
 }
 
 const addStartedConvo = async (convoId, isInitiator, phoneNumber, firstName, lastName)=>{
+    console.log("ConvoDatabase::AddStartedConvo. Is initiator: ", isInitiator);
     try{
         if(isInitiator){
-            const addStartedConvoQuery = 
+            console.log("ConvoDatabase::AddStartedConvo. Is initiator1: ", isInitiator);
+            const addStartedConvoQuery_initiator = 
             `INSERT INTO convos
                 (id, initiator_number, initiator_first_name, initiator_last_name)
             VALUES
@@ -43,10 +45,11 @@ const addStartedConvo = async (convoId, isInitiator, phoneNumber, firstName, las
             ON DUPLICATE KEY UPDATE 
                 initiator_number=?, initiator_first_name=?, initiator_last_name=?`;
             const bindParams = [convoId, phoneNumber, firstName, lastName, phoneNumber, firstName, lastName];
-            await DBQuerier.executeQuery(addStartedConvoQuery, bindParams);
+            await DBQuerier.executeQuery(addStartedConvoQuery_initiator, bindParams);
         }
         else{
-            const addStartedConvoQuery = 
+            console.log("ConvoDatabase::AddStartedConvo. Is initiator2: ", isInitiator);
+            const addStartedConvoQuery_receiver = 
             `INSERT INTO convos
                 (id, receiver_number, receiver_first_name, receiver_last_name)
             VALUES
@@ -54,7 +57,7 @@ const addStartedConvo = async (convoId, isInitiator, phoneNumber, firstName, las
             ON DUPLICATE KEY UPDATE
                 receiver_number=?, receiver_first_name=?, receiver_last_name=?`;
             const bindParams = [convoId, phoneNumber, firstName, lastName, phoneNumber, firstName, lastName];
-            await DBQuerier.executeQuery(addStartedConvoQuery, bindParams);
+            await DBQuerier.executeQuery(addStartedConvoQuery_receiver, bindParams);
         }
 
         return {success: true};
@@ -200,7 +203,8 @@ const getAllConvosMetaDataForUser = async (phoneNumber) => {
     }
 }
 
-exports.addConvo = addConvo;
+exports.finalizeConvo = finalizeConvo;
+exports.addStartedConvo = addStartedConvo;
 exports.setConvoApproval = setConvoApproval;
 exports.getConvoFilePath = getConvoFilePath;
 exports.getAllConvosMetaDataForUser = getAllConvosMetaDataForUser;
