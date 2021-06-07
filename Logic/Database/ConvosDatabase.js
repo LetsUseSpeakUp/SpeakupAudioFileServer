@@ -6,30 +6,62 @@ const DBQuerier = require('./DatabaseQuerier');
  * @returns 
  */
 
-const addConvo = async (convoFilePath, convoMetadataString) => {
+const finalizeConvo = async (convoFilePath, convoMetadataString) => {
     try {
         const convoMetadata = convertConvoMetadataFromClientToServerFormat(JSON.parse(convoMetadataString));        
 
-        if (!convoMetadata.convoId) throw ('missing convoId from convoMetadata');
-        if (!convoMetadata.initiatorPhoneNumber) throw ('missing initiatorPhoneNumber from convoMetadata');
-        if (!convoMetadata.receiverPhoneNumber) throw ('missing receiverPhoneNumber from convoMetadata');
+        if (!convoMetadata.convoId) throw ('missing convoId from convoMetadata');        
         if (!convoMetadata.timestampOfStart) throw ('missing timestampOfStart from convoMetadata');
         if (!convoMetadata.length) throw ('missing length from convoMetadata');
 
-        const addConvoQuery =
-            `INSERT INTO convos
-            (id, initiator_number, receiver_number, timestamp_of_start, length, file_path)
-        VALUES
-            (?,?,?,?,?,?)`;
-        const bindParams = [convoMetadata.convoId, convoMetadata.initiatorPhoneNumber, convoMetadata.receiverPhoneNumber,
-             convoMetadata.timestampOfStart, convoMetadata.length, convoFilePath];
+        const finalizeConvoQuery = 
+        `UPDATE convos
+        SET
+            timestamp_of_start=?, length=?, file_path=?, is_completed=true
+        WHERE
+            convos.id=?`;
+            
+        const bindParams=[convoMetadata.timestampOfStart, convoMetadata.length, convoFilePath, convoMetadata.convoId];
 
-        await DBQuerier.executeQuery(addConvoQuery, bindParams);
+        await DBQuerier.executeQuery(finalizeConvoQuery, bindParams);
         return { success: true };
     }
     catch (error) {
         console.log("ConvosDatabase::addConvo. Error: ", error);
         return { success: false, errorMessage: error };
+    }
+}
+
+const addStartedConvo = async (convoId, isInitiator, phoneNumber, firstName, lastName)=>{
+    try{
+        if(isInitiator){
+            const addStartedConvoQuery = 
+            `INSERT INTO convos
+                (id, initiator_number, initiator_first_name, initiator_last_name)
+            VALUES
+                (?,?,?,?)
+            ON DUPLICATE KEY UPDATE 
+                initiator_number=?, initiator_first_name=?, initiator_last_name=?`;
+            const bindParams = [convoId, phoneNumber, firstName, lastName, phoneNumber, firstName, lastName];
+            await DBQuerier.executeQuery(addStartedConvoQuery, bindParams);
+        }
+        else{
+            const addStartedConvoQuery = 
+            `INSERT INTO convos
+                (id, receiver_number, receiver_first_name, receiver_last_name)
+            VALUES
+                (?,?,?,?)
+            ON DUPLICATE KEY UPDATE
+                receiver_number=?, receiver_first_name=?, receiver_last_name=?`;
+            const bindParams = [convoId, phoneNumber, firstName, lastName, phoneNumber, firstName, lastName];
+            await DBQuerier.executeQuery(addStartedConvoQuery, bindParams);
+        }
+
+        return {success: true};
+    }
+    catch(error){
+        console.log("ConvosDatabase::addStartedConvo. Error: ", error);
+        return {success: false, errorMessage: error};
     }
 }
 

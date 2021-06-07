@@ -24,7 +24,8 @@ router.post('/getchanneltoken', async(req, res)=>{
         });
     }    
     //TODO: Verify that user phone number is part of channel name
-    //TODO: If no 
+    
+    //TODO: Write to DB
 
     let uid = req.body.uid;
     if(!uid) uid = 0;
@@ -34,7 +35,6 @@ router.post('/getchanneltoken', async(req, res)=>{
     const privilegeExpiredTs = currentTimestamp + timeToLive;
 
     const token = RtcTokenBuilder.buildTokenWithUid(APP_ID, APP_CERTIFICATE, channelName, uid, RtcRole.PUBLISHER, privilegeExpiredTs);
-    //Tell DB that this user with this name requested a channelToken
     return res.status(200).send({
         token: token
     });
