@@ -20,7 +20,7 @@ router.post('/getchanneltoken', async(req, res)=>{
     const timeToLive = 30*60;
     const privilegeExpiredTs = currentTimestamp + timeToLive;
 
-    const token = RtcTokenBuilder.buildTokenWithUid(appID, appCertificate, channelName, uid, RtcRole.PUBLISHER, privilegeExpiredTs);
+    const token = RtcTokenBuilder.buildTokenWithUid(APP_ID, APP_CERTIFICATE, channelName, uid, RtcRole.PUBLISHER, privilegeExpiredTs);
     return res.status(200).send({
         token: token
     });
