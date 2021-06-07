@@ -2,7 +2,7 @@ const router = require('express').Router();
 const ConvosDatabase = reqlib('/Logic/Database/ConvosDatabase');
 
 
-router.get('/', async (req, res) => {
+router.get('/', async (req, res) => {    
     const convoId = req.query.convoId;
 
     if (!convoId) {
@@ -11,7 +11,9 @@ router.get('/', async (req, res) => {
         });
     }
 
-    //TODO: Get Full Convo Info. 500 if auth token says you are not initiator or receiver
+    const phoneNumber = req.user['https://backend.letsusespeakup.com/token/usermetadata/phone_number'] 
+        || req.user['https://backend.letsusespeakup.com/token/usermetadata/metadata'].phone_number;
+        
     const approvalResponse = await ConvosDatabase.getConvoApprovalInfo(convoId);
     if (!approvalResponse.success) {
         return res.status(500).send({
@@ -30,6 +32,11 @@ router.get('/', async (req, res) => {
         });
     }
 
+    if(approvalResponse.initiatorNumber !== phoneNumber && approvalResponse.receiverNumber !== phoneNumber){
+        return res.status(500).send({
+            message: 'invalid phone number'
+        });
+    }
 
     const filePathResponse = await ConvosDatabase.getConvoFilePath(convoId);
     console.log(filePathResponse);

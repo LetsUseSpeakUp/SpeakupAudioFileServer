@@ -112,7 +112,11 @@ const setConvoApproval = async (convoId, phoneNumber, isApproved) => {
 const getConvoApprovalInfo = async (convoId)=>{
     try{
         const approvalInfoQuery = 
-        `SELECT initiator_approval, receiver_approval
+        `SELECT 
+            initiator_approval, 
+            receiver_approval,
+            initiator_number,
+            receiver_number
         FROM convos WHERE id=?`;
 
         const bindParams = [convoId];
@@ -121,8 +125,10 @@ const getConvoApprovalInfo = async (convoId)=>{
 
         const initiatorApproval = dbResponse[0][0].initiator_approval;
         const receiverApproval = dbResponse[0][0].receiver_approval;
+        const initiatorNumber = dbResponse[0][0].initiator_number;
+        const receiverNumber = dbResponse[0][0].receiver_number;
 
-        return {success: true, initiatorApproval: initiatorApproval, receiverApproval: receiverApproval};
+        return {success: true, initiatorApproval: initiatorApproval, receiverApproval: receiverApproval, initiatorNumber: initiatorNumber, receiverNumber: receiverNumber};
     }
     catch(error){
         return{success: false, errorMessage: error}
@@ -151,44 +157,36 @@ const getAllConvosMetaDataForUser = async (phoneNumber) => {
 
         const initiatorQuery =
             `SELECT
-                users.phone_number AS receiver_phone_number, 
-                users.first_name AS receiver_first_name,
-                users.last_name AS receiver_last_name,
-                convos.initiator_number AS initiator_phone_number,
-                convos.id AS convo_id,
-                convos.timestamp_of_start,
-                convos.length,
-                convos.initiator_approval,
-                convos.receiver_approval
+                receiver_number AS receiver_phone_number, 
+                receiver_first_name,
+                receiver_last_name,
+                initiator_number AS initiator_phone_number,
+                id AS convo_id,
+                timestamp_of_start,
+                length,
+                initiator_approval,
+                receiver_approval
             FROM
-                users
-            JOIN
-                convos
-            ON
-                users.phone_number=convos.receiver_number
-            AND
-                convos.initiator_number=?
+                convos            
+            ON                
+                initiator_number=?
             `;
         
         const receiverQuery =
             `SELECT
-                users.phone_number AS initiator_phone_number,
-                users.first_name AS initiator_first_name,
-                users.last_name AS initiator_last_name,
-                convos.receiver_number AS receiver_phone_number,
-                convos.id AS convo_id,
-                convos.timestamp_of_start,
-                convos.length,
-                convos.initiator_approval,
-                convos.receiver_approval
+                initiator_number AS initiator_phone_number,
+                initiator_first_name,
+                initiator_last_name,
+                receiver_number AS receiver_phone_number,
+                id AS convo_id,
+                timestamp_of_start,
+                length,
+                initiator_approval,
+                receiver_approval
             FROM
-                users
-            JOIN
                 convos
             ON
-                users.phone_number=convos.initiator_number
-            AND
-                convos.receiver_number=?`;
+                receiver_number=?`;
 
             const bindParams = [phoneNumber];
             const metadataAsInitiator = (await DBQuerier.executeQuery(initiatorQuery, bindParams))[0];

@@ -1,9 +1,11 @@
 const router = require('express').Router();
 const ConvosDatabase = reqlib('/Logic/Database/ConvosDatabase');
 
-router.post('/allforuser', async (req, res) => {
-    const phoneNumber = req.body.phoneNumber;
-    if (!phoneNumber) { //TODO: Don't need this in request; just get it from auth token
+router.post('/allforuser', async (req, res) => {    
+    const phoneNumber = req.user['https://backend.letsusespeakup.com/token/usermetadata/phone_number'] 
+        || req.user['https://backend.letsusespeakup.com/token/usermetadata/metadata'].phone_number;
+        
+    if (!phoneNumber) {
         return res.status(400).send({
             message: 'phone number not set'
         });
