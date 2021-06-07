@@ -168,7 +168,7 @@ const getAllConvosMetaDataForUser = async (phoneNumber) => {
                 receiver_approval
             FROM
                 convos            
-            ON                
+            WHERE                
                 initiator_number=?
             `;
         
@@ -185,7 +185,7 @@ const getAllConvosMetaDataForUser = async (phoneNumber) => {
                 receiver_approval
             FROM
                 convos
-            ON
+            WHERE
                 receiver_number=?`;
 
             const bindParams = [phoneNumber];
