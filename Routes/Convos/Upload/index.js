@@ -1,44 +1,53 @@
 const express = require('express');
 const router = express.Router();
-const ConvosDatabase = reqlib('/Logic/Database/ConvosDatabase');
-const ConvosFileManager = reqlib('/Logic/ConvosFileManager');
+const ConvosDatabase = require('../../../Logic/Database/ConvosDatabase');
+const ConvosFileManager = require('../../../Logic/ConvosFileManager')
 
 router.post('/', async (req, res) => {
 
     const convoMetadata = req.body.convoMetadata;
     const convoFile = req.files.convoFile;
+    const phoneNumber = req.user['https://backend.letsusespeakup.com/token/usermetadata/phone_number'] 
+        || req.user['https://backend.letsusespeakup.com/token/usermetadata/metadata'].phone_number;
 
     if (!convoMetadata) {
-        res.status(400).send({
+        return res.status(400).send({
             message: "No convometadata included"
         });
-        return;
     }
-    else if (!convoFile) {
-        res.status(400).send({
+
+    if (!convoFile) {
+        return res.status(400).send({
             message: "No convoFile included"
         });
-        return;
     }
-    else {
-        const metadata = JSON.parse(convoMetadata);
 
-        const filePath = ConvosFileManager.convertIdToFilePath(metadata.convoId)        
-        convoFile.mv(filePath);
-        const uploadResponse = await ConvosDatabase.addConvo(filePath, convoMetadata);
-        if(uploadResponse.success){
-            res.send({
-                message: 'successfully uploaded'
-            });
-            return;
-        }
-        else{
-            res.status(500).send({
-                message: uploadResponse.errorMessage
-            });
-            return;
-        }
+    const metadata = JSON.parse(convoMetadata);
+    if(metadata.initiatorPhoneNumber !== phoneNumber && metadata.receiverPhoneNumber !== phoneNumber){
+        return res.status(500).send({
+            message: 'invalid phone number'
+        });
     }
+
+    const getApprovalResponse = await ConvosDatabase.getConvoApprovalInfo(metadata.convoId);
+    if(getApprovalResponse.initiatorNumber !== phoneNumber && getApprovalResponse.receiverNumber !== phoneNumber){
+        return res.status(500).send({
+            message: 'invalid phone number'
+        });
+    }
+
+    const filePath = ConvosFileManager.convertIdToFilePath(metadata.convoId)
+    convoFile.mv(filePath);
+    const uploadResponse = await ConvosDatabase.finalizeConvo(filePath, convoMetadata);
+    if (uploadResponse.success) {
+        return res.send({
+            message: 'successfully uploaded'
+        });
+    }
+
+    return res.status(500).send({
+        message: uploadResponse.errorMessage
+    });
 })
 
 module.exports = router;

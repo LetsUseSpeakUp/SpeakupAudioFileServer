@@ -25,8 +25,8 @@ class DatabaseQuerier { //TODO: Refactor this to be a module with functions inst
      * So it might look something like 'const id = await executeQuery(idQuery)[0][0].id'
      * @param {*} query 
      */
-    async executeQuery(query, bindParams, retrying = false) {
-        console.log("DatabaseQuerier::executeQuery: ", query, " with params: ", bindParams, " retrying: ", retrying);
+    async executeQuery(query, bindParams) {
+        console.log("DatabaseQuerier::executeQuery: ", query, " with params: ", bindParams);
         let i;
         for (i = 0; i < bindParams.length; i++) {
             if (bindParams[i] == null) {

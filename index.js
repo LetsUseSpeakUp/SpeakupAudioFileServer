@@ -4,7 +4,7 @@ const fileUpload = require('express-fileupload');
 const cors = require('cors');
 const bodyParser = require('body-parser');
 const morgan = require('morgan');
-const DBSingleton = require('./Logic/Database/DatabaseQuerier');
+const Authentication = require('./Authentication');
 
 global.reqlib = require('app-root-path').require;
 
@@ -26,4 +26,4 @@ app.listen(port,  ()=>{
     console.log("SpeakupAudioFileServer listening on port ", port);
 })
 
-app.use('/', require('./Routes'));
+app.use('/', Authentication.checkJwt, require('./Routes'));

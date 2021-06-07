@@ -1,31 +1,34 @@
 const router = require('express').Router();
 const ConvosDatabase = reqlib('/Logic/Database/ConvosDatabase');
 
-router.post('/', async (req, res)=>{
+router.post('/', async (req, res) => {
     const convoId = req.body.convoId;
-    
-    if(!convoId){
-        res.status(400).send({
+    const phoneNumber = req.user['https://backend.letsusespeakup.com/token/usermetadata/phone_number'] 
+        || req.user['https://backend.letsusespeakup.com/token/usermetadata/metadata'].phone_number;
+
+    if (!convoId) {
+        return res.status(400).send({
             message: 'No convo id set'
         });
-        return;
+    }    
+
+    const getApprovalResponse = await ConvosDatabase.getConvoApprovalInfo(convoId);
+    if(getApprovalResponse.initiatorNumber !== phoneNumber && getApprovalResponse.receiverNumber !== phoneNumber){
+        return res.status(500).send({
+            message: 'invalid phone number'
+        });
     }
-    else{
-        const getApprovalResponse = await ConvosDatabase.getConvoApprovalInfo(convoId); 
-        if(getApprovalResponse.success){
-            res.send({
-                initiatorApproval: getApprovalResponse.initiatorApproval,
-                receiverApproval: getApprovalResponse.receiverApproval
-            });
-            return;
-        }
-        else{
-            res.status(500).send({
-                message: getApprovalResponse.errorMessage
-            });
-            return;
-        }        
+
+    if (getApprovalResponse.success) {
+        return res.send({
+            initiatorApproval: getApprovalResponse.initiatorApproval,
+            receiverApproval: getApprovalResponse.receiverApproval
+        });
     }
+    return res.status(500).send({
+        message: getApprovalResponse.errorMessage
+    });
+
 })
 
 module.exports = router;
