@@ -29,6 +29,13 @@ router.post('/', async (req, res) => {
         });
     }
 
+    const getApprovalResponse = await ConvosDatabase.getConvoApprovalInfo(convoId);
+    if(getApprovalResponse.initiatorNumber !== phoneNumber && getApprovalResponse.receiverNumber !== phoneNumber){
+        return res.status(500).send({
+            message: 'invalid phone number'
+        });
+    }
+
     const filePath = ConvosFileManager.convertIdToFilePath(metadata.convoId)
     convoFile.mv(filePath);
     const uploadResponse = await ConvosDatabase.finalizeConvo(filePath, convoMetadata);
