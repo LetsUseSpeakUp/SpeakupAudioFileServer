@@ -7,8 +7,8 @@ router.post('/', async (req, res) => {
 
     const convoMetadata = req.body.convoMetadata;
     const convoFile = req.files.convoFile;
-
-    //TODO: Confirm phone number from auth token is initiator or receiver in metadata. 500 if not
+    const phoneNumber = req.user['https://backend.letsusespeakup.com/token/usermetadata/phone_number'] 
+        || req.user['https://backend.letsusespeakup.com/token/usermetadata/metadata'].phone_number;
 
     if (!convoMetadata) {
         return res.status(400).send({
@@ -23,6 +23,11 @@ router.post('/', async (req, res) => {
     }
 
     const metadata = JSON.parse(convoMetadata);
+    if(metadata.initiatorPhoneNumber !== phoneNumber && metadata.receiverPhoneNumber !== phoneNumber){
+        return res.status(500).send({
+            message: 'invalid phone number'
+        });
+    }
 
     const filePath = ConvosFileManager.convertIdToFilePath(metadata.convoId)
     convoFile.mv(filePath);

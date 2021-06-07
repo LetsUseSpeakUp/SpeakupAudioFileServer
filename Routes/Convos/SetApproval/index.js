@@ -3,7 +3,8 @@ const ConvosDatabase = reqlib('/Logic/Database/ConvosDatabase');
 
 router.post('/', async (req, res) => {
     const convoId = req.body.convoId;
-    const phoneNumber = req.body.phoneNumber; //TODO: Get phone number from auth token, not from body
+    const phoneNumber = req.user['https://backend.letsusespeakup.com/token/usermetadata/phone_number'] 
+        || req.user['https://backend.letsusespeakup.com/token/usermetadata/metadata'].phone_number;
     const approval = req.body.approval;
 
     if (!convoId) {
