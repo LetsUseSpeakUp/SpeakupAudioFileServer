@@ -8,37 +8,34 @@ router.post('/', async (req, res) => {
     const convoMetadata = req.body.convoMetadata;
     const convoFile = req.files.convoFile;
 
+    //TODO: Confirm phone number from auth token is initiator or receiver in metadata. 500 if not
+
     if (!convoMetadata) {
-        res.status(400).send({
+        return res.status(400).send({
             message: "No convometadata included"
         });
-        return;
     }
-    else if (!convoFile) {
-        res.status(400).send({
+
+    if (!convoFile) {
+        return res.status(400).send({
             message: "No convoFile included"
         });
-        return;
     }
-    else {
-        const metadata = JSON.parse(convoMetadata);
 
-        const filePath = ConvosFileManager.convertIdToFilePath(metadata.convoId)        
-        convoFile.mv(filePath);
-        const uploadResponse = await ConvosDatabase.addConvo(filePath, convoMetadata);
-        if(uploadResponse.success){
-            res.send({
-                message: 'successfully uploaded'
-            });
-            return;
-        }
-        else{
-            res.status(500).send({
-                message: uploadResponse.errorMessage
-            });
-            return;
-        }
+    const metadata = JSON.parse(convoMetadata);
+
+    const filePath = ConvosFileManager.convertIdToFilePath(metadata.convoId)
+    convoFile.mv(filePath);
+    const uploadResponse = await ConvosDatabase.addConvo(filePath, convoMetadata);
+    if (uploadResponse.success) {
+        return res.send({
+            message: 'successfully uploaded'
+        });
     }
+
+    return res.status(500).send({
+        message: uploadResponse.errorMessage
+    });
 })
 
 module.exports = router;
