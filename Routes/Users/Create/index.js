@@ -5,6 +5,7 @@ router.post('/', async (req, res) => {
     const phoneNumber = req.body.phoneNumber;
     const firstName = req.body.firstName;
     const lastName = req.body.lastName;
+    console.log("/User/Create: User: ", req.user);
 
     if (!phoneNumber) {
         res.status(400).send({
