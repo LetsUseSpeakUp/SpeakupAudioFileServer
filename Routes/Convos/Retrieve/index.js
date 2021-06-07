@@ -4,15 +4,14 @@ const ConvosDatabase = reqlib('/Logic/Database/ConvosDatabase');
 
 router.get('/', async (req, res) => {    
     const convoId = req.query.convoId;
+    const phoneNumber = req.user['https://backend.letsusespeakup.com/token/usermetadata/phone_number'] 
+        || req.user['https://backend.letsusespeakup.com/token/usermetadata/metadata'].phone_number;
 
     if (!convoId) {
         return res.status(400).send({
             message: 'No convo id provided'
         });
     }
-
-    const phoneNumber = req.user['https://backend.letsusespeakup.com/token/usermetadata/phone_number'] 
-        || req.user['https://backend.letsusespeakup.com/token/usermetadata/metadata'].phone_number;
         
     const approvalResponse = await ConvosDatabase.getConvoApprovalInfo(convoId);
     if (!approvalResponse.success) {
