@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const ConvosDatabase = reqlib('/Logic/Database/ConvosDatabase');
-const ConvosFileManager = reqlib('/Logic/ConvosFileManager');
+const ConvosDatabase = require('../../../Logic/Database/ConvosDatabase');
+const ConvosFileManager = require('../../../Logic/Database/ConvosDatabase')
 
 router.post('/', async (req, res) => {
 
@@ -31,7 +31,7 @@ router.post('/', async (req, res) => {
 
     const filePath = ConvosFileManager.convertIdToFilePath(metadata.convoId)
     convoFile.mv(filePath);
-    const uploadResponse = await ConvosDatabase.addConvo(filePath, convoMetadata);
+    const uploadResponse = await ConvosDatabase.finalizeConvo(filePath, convoMetadata);
     if (uploadResponse.success) {
         return res.send({
             message: 'successfully uploaded'
