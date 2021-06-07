@@ -12,8 +12,7 @@ SpeakUpServer routes
 API
 	+ createNewUser (phone number)
 	+ addConvo (convoFiles, convoMetaData[which references phone number, not UID])
-	+ approveConvo (convo UID, phone number)
-	+ denyConvo (convo UID, phone number)
-	+ getConvo (convo UID)
+	+ setConvoApproval (convo UID, phone number, approvalStatus)
+	+ getConvoFile (convo UID)
 	+ getAllConvosMetaDataForUser (phone number)
 	+ getSnippetUrlOfConvo (phone number
