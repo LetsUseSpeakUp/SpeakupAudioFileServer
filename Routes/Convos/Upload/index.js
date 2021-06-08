@@ -21,7 +21,6 @@ router.post('/', async (req, res) => {
             message: "No convoFile included"
         });
     }
-    console.log("/Convos/Upload. Phone number: |" + phoneNumber + "|");//TODO: Delete
     
     const metadata = ConvosDatabase.convertConvoMetadataFromClientToServerFormat(JSON.parse(convoMetadata));
     console.log("/Convos/Upload. initiator 1: ", metadata.initiatorPhoneNumber, " metadata: ", metadata);

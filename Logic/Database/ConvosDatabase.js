@@ -196,12 +196,44 @@ const getAllConvosMetaDataForUser = async (phoneNumber) => {
             const metadataAsInitiator = (await DBQuerier.executeQuery(initiatorQuery, bindParams))[0];
             const metadataAsReceiver = (await DBQuerier.executeQuery(receiverQuery, bindParams))[0];
 
-            console.log(metadataAsInitiator[0]);
-
             return {success: true, metadataAsInitiator: metadataAsInitiator, metadataAsReceiver: metadataAsReceiver};
     }
     catch (error) {
         return { success: false, errorMessage: error };
+    }
+}
+
+const getSingleConvoMetadata = async(convoId)=>{
+    try{
+        const metadataQuery = 
+        `SELECT
+            id,
+            initiator_number,
+            initiator_first_name,
+            initiator_last_name,
+            receiver_number,
+            receiver_first_name,
+            receiver_last_name,
+            timestamp_of_start,
+            length,
+            initiator_approval,
+            receiver_approval,
+            is_completed
+        FROM
+            convos
+        WHERE
+            id=?`;
+
+        const bindParams = [convoId];
+        const response = (await DBQuerier.executeQuery(metadataQuery, bindParams))[0];
+            
+        return {success: true, id: response.id, initiator_number: response.initiator_number, initiator_first_name: response.initiator_first_name, 
+            initiator_last_name: response.initiator_last_name, receiver_number: response.receiver_number, receiver_first_name: response.receiver_first_name, 
+            receiver_last_name: response.receiver_last_name, timestamp_of_start: response.timestamp_of_start, length: response.length, 
+            initiator_approval: response.initiator_approval, receiver_approval: response.receiver_approval, is_completed: response.is_completed};
+    }
+    catch(error){
+        return {success: false, errorMessage: error};
     }
 }
 
@@ -210,5 +242,6 @@ exports.addStartedConvo = addStartedConvo;
 exports.setConvoApproval = setConvoApproval;
 exports.getConvoFilePath = getConvoFilePath;
 exports.getAllConvosMetaDataForUser = getAllConvosMetaDataForUser;
+exports.getSingleConvoMetadata = getSingleConvoMetadata;
 exports.getConvoApprovalInfo = getConvoApprovalInfo;
 exports.convertConvoMetadataFromClientToServerFormat = convertConvoMetadataFromClientToServerFormat;
