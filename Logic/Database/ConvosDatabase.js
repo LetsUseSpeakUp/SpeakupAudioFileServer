@@ -170,6 +170,8 @@ const getAllConvosMetaDataForUser = async (phoneNumber) => {
                 convos            
             WHERE                
                 initiator_number=?
+            AND
+                is_completed=true
             `;
         
         const receiverQuery =
@@ -186,7 +188,9 @@ const getAllConvosMetaDataForUser = async (phoneNumber) => {
             FROM
                 convos
             WHERE
-                receiver_number=?`;
+                receiver_number=?
+            AND
+                is_completed=true`;
 
             const bindParams = [phoneNumber];
             const metadataAsInitiator = (await DBQuerier.executeQuery(initiatorQuery, bindParams))[0];
