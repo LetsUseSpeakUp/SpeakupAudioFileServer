@@ -21,18 +21,20 @@ router.post('/', async (req, res) => {
             message: "No convoFile included"
         });
     }
-
-    const metadata = JSON.parse(convoMetadata);
-    if(metadata.initiatorPhoneNumber !== phoneNumber && metadata.receiverPhoneNumber !== phoneNumber){
+    console.log("/Convos/Upload. Phone number: |" + phoneNumber + "|");//TODO: Delete
+    
+    const metadata = ConvosDatabase.convertConvoMetadataFromClientToServerFormat(JSON.parse(convoMetadata));
+    console.log("/Convos/Upload. initiator 1: ", metadata.initiatorPhoneNumber, " metadata: ", metadata);
+    if((metadata.initiatorPhoneNumber !== phoneNumber) && (metadata.receiverPhoneNumber !== phoneNumber)){
         return res.status(500).send({
-            message: 'invalid phone number'
+            message: 'invalid phone number 1'
         });
     }
 
     const getApprovalResponse = await ConvosDatabase.getConvoApprovalInfo(metadata.convoId);
     if(getApprovalResponse.initiatorNumber !== phoneNumber && getApprovalResponse.receiverNumber !== phoneNumber){
         return res.status(500).send({
-            message: 'invalid phone number'
+            message: 'invalid phone number 2'
         });
     }
 

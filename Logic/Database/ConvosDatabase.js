@@ -211,3 +211,4 @@ exports.setConvoApproval = setConvoApproval;
 exports.getConvoFilePath = getConvoFilePath;
 exports.getAllConvosMetaDataForUser = getAllConvosMetaDataForUser;
 exports.getConvoApprovalInfo = getConvoApprovalInfo;
+exports.convertConvoMetadataFromClientToServerFormat = convertConvoMetadataFromClientToServerFormat;
