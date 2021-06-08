@@ -225,7 +225,7 @@ const getSingleConvoMetadata = async(convoId)=>{
             id=?`;
 
         const bindParams = [convoId];
-        const response = (await DBQuerier.executeQuery(metadataQuery, bindParams))[0];
+        const response = (await DBQuerier.executeQuery(metadataQuery, bindParams))[0][0];
             
         return {success: true, id: response.id, initiator_number: response.initiator_number, initiator_first_name: response.initiator_first_name, 
             initiator_last_name: response.initiator_last_name, receiver_number: response.receiver_number, receiver_first_name: response.receiver_first_name, 

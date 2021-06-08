@@ -42,6 +42,7 @@ router.post('/singleconvo', async(req, res)=>{
 
     const metadataResponse = await ConvosDatabase.getSingleConvoMetadata(convoId);
     if(metadataResponse.success){
+        console.log("/Convos/getmetadata/singleconvo. phone number: ", phoneNumber, " metadata response: ", metadataResponse);
         if(phoneNumber !== metadataResponse.initiator_number && phoneNumber !== metadataResponse.receiver_number){
             return res.status(500).send({
                 message: 'invalid phone number'
