@@ -29,7 +29,7 @@ app.listen(port,  ()=>{
 
 app.use('/backend', Authentication.checkJwt, require('./Routes'));
 
-app.use(express.static(path.join(__dirname, '../speakupwebfrontend/build')));
+app.use(express.static(path.join(__dirname, './react_frontend/build')));
 app.get('*', (req, res)=>{
-    res.sendFile(path.resolve(__dirname, '../speakupwebfrontend/build', 'index.html'));
+    res.sendFile(path.resolve(__dirname, './react_frontend/build', 'index.html'));
 })
