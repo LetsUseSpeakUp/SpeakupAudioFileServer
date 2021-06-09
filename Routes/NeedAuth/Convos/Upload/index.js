@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const ConvosDatabase = require('../../../Logic/Database/ConvosDatabase');
-const ConvosFileManager = require('../../../Logic/ConvosFileManager')
+const ConvosDatabase = require('../../../../Logic/Database/ConvosDatabase')
+const ConvosFileManager = require('../../../../Logic/ConvosFileManager')
 
 router.post('/', async (req, res) => {
 

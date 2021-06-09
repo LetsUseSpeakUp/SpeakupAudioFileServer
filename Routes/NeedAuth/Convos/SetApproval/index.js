@@ -1,5 +1,5 @@
 const router = require('express').Router();
-const ConvosDatabase = reqlib('/Logic/Database/ConvosDatabase');
+const ConvosDatabase = require('../../../../Logic/Database/ConvosDatabase')
 
 router.post('/', async (req, res) => {
     const convoId = req.body.convoId;

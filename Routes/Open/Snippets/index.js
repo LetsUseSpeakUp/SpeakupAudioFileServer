@@ -1,12 +1,12 @@
 const router = require('express').Router();
-const ConvosDatabase = reqlib('/Logic/Database/ConvosDatabase');
+const ConvosDatabase = require('../../../Logic/Database/ConvosDatabase')
 
 
 router.get('/', async (req, res) => {    
     const convoId = req.query.convoId;
-    const phoneNumber = req.user['https://backend.letsusespeakup.com/token/usermetadata/phone_number'] 
-        || req.user['https://backend.letsusespeakup.com/token/usermetadata/metadata'].phone_number;
-
+    const snippetStart = req.query.snippetStart;
+    const snippetEnd = req.query.snippetEnd;
+    
     if (!convoId) {
         return res.status(400).send({
             message: 'No convo id provided'
@@ -39,15 +39,15 @@ router.get('/', async (req, res) => {
 
     const filePathResponse = await ConvosDatabase.getConvoFilePath(convoId);
     console.log(filePathResponse);
-    if (filePathResponse.success) {
+    //TODO: Turn this into a snippet
+    /*if (filePathResponse.success) {
         const filePath = filePathResponse.filePath;
         return res.download(filePath);
     }
 
     return res.status(500).send({
         message: filePathResponse.errorMessage
-    });
-
+    }); */
 })
 
 module.exports = router;
