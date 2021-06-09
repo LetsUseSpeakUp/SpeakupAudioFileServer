@@ -5,6 +5,7 @@ const cors = require('cors');
 const bodyParser = require('body-parser');
 const morgan = require('morgan');
 const Authentication = require('./Authentication');
+const path = require('path');
 
 global.reqlib = require('app-root-path').require;
 
@@ -26,4 +27,9 @@ app.listen(port,  ()=>{
     console.log("SpeakupAudioFileServer listening on port ", port);
 })
 
-app.use('/', Authentication.checkJwt, require('./Routes'));
+app.use('/backend', Authentication.checkJwt, require('./Routes'));
+
+app.use(express.static(path.join(__dirname, '../speakupwebfrontend/build')));
+app.get('*', (req, res)=>{
+    res.sendFile(path.resolve(__dirname, '../speakupwebfrontend/build', 'index.html'));
+})
