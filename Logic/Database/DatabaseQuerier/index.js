@@ -37,7 +37,16 @@ class DatabaseQuerier { //TODO: Refactor this to be a module with functions inst
 
         console.log("DatabaseQuerier::executeQuery. Executing");
         const databaseConnection = await this.connectToDatabase();
-        return await databaseConnection.execute(query, bindParams);       
+        try{
+            const returnVal = await databaseConnection.execute(query, bindParams);       
+            databaseConnection.destroy();
+            return returnVal;
+        }
+        catch(error){
+            databaseConnection.destroy();
+            throw error;
+        }
+        
     }
 
     async _runTestQuery() {
