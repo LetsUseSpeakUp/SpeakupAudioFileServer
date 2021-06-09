@@ -1,6 +1,6 @@
 const router = require('express').Router();
-const ConvosDatabase = require('../../../Logic/Database/ConvosDatabase')
-
+const ConvosFileManager = require('../../../Logic/ConvosFileManager');
+const ConvosDatabase = require('../../../Logic/Database/ConvosDatabase');
 
 router.get('/', async (req, res) => {    
     const convoId = req.query.convoId;
@@ -31,23 +31,24 @@ router.get('/', async (req, res) => {
         });
     }
 
-    if(approvalResponse.initiatorNumber !== phoneNumber && approvalResponse.receiverNumber !== phoneNumber){
+    let filePath = ''
+    try{
+        filePath = ConvosFileManager.getSnippet(convoId, snippetStart, snippetEnd);        
+    }
+    catch(error){
+        console.log("ERROR -- Snippets: ", error);
         return res.status(500).send({
-            message: 'invalid phone number'
+            message: 'error getting snippet'
         });
     }
-
-    const filePathResponse = await ConvosDatabase.getConvoFilePath(convoId);
-    console.log(filePathResponse);
-    //TODO: Turn this into a snippet
-    /*if (filePathResponse.success) {
-        const filePath = filePathResponse.filePath;
+    
+    if (filePath.length > 0) {        
         return res.download(filePath);
     }
 
     return res.status(500).send({
-        message: filePathResponse.errorMessage
-    }); */
+        message: 'error getting snippet (2)'
+    });
 })
 
 module.exports = router;
