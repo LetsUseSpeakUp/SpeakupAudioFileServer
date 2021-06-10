@@ -1,7 +1,8 @@
 const router = require('express').Router();
+const Authentication = require('../Authentication');
 
 
-router.use('/convos', require('./Convos'));
-router.use('/tokens', require('./Tokens'))
+router.use('/needauth', Authentication.checkJwt, require('./NeedAuth'));
+router.use('/open', require('./Open'));
 
 module.exports = router;

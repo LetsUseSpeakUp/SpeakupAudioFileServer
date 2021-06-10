@@ -1,5 +1,5 @@
 const router = require('express').Router();
-const ConvosDatabase = reqlib('/Logic/Database/ConvosDatabase');
+const ConvosDatabase = require('../../../../Logic/Database/ConvosDatabase')
 
 router.post('/allforuser', async (req, res) => {    
     const phoneNumber = req.user['https://backend.letsusespeakup.com/token/usermetadata/phone_number'] 

@@ -1,6 +1,6 @@
 const router = require('express').Router();
 const {RtcTokenBuilder, RtcRole} = require('agora-access-token')
-const {addStartedConvo} = require('../../Logic/Database/ConvosDatabase');
+const {addStartedConvo} = require('../../../Logic/Database/ConvosDatabase')
 
 const APP_ID = process.env.APP_ID;
 const APP_CERTIFICATE = process.env.APP_CERTIFICATE;
