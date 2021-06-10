@@ -2,12 +2,23 @@ const router = require('express').Router();
 const ConvosFileManager = require('../../../Logic/ConvosFileManager');
 const ConvosDatabase = require('../../../Logic/Database/ConvosDatabase');
 const SnippetsDatabase = require('../../../Logic/Database/SnippetsDatabase');
+const Encryption = require('../../../Logic/Encryption')
 const fs = require('fs');
+const querystring = require('querystring');
 
-router.get('/', async (req, res) => {    
-    const convoId = req.query.convoId;
-    const snippetStart = req.query.snippetStart;
-    const snippetEnd = req.query.snippetEnd;
+router.get('/', async (req, res) => {  
+    const encrypted = req.query.val;
+    if(!encrypted){
+        return res.status(400).send({
+            message: 'no query'
+        })
+    }
+    const decrypted = Encryption.getDecryptedString(encrypted);
+    const parsedQuery = querystring.parse(decrypted);
+        
+    const convoId = parsedQuery['convoId'];
+    const snippetStart = parsedQuery['snippetStart'];
+    const snippetEnd = parsedQuery['snippetEnd'];
     
     if (!convoId) {
         return res.status(400).send({

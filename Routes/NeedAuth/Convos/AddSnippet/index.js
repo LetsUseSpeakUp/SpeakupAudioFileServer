@@ -53,19 +53,13 @@ router.post('/', async(req, res)=>{
         });
     }
 
-    // const addSnippetResponse = await SnippetsDatabase.addSnippet(convoId, snippetStart, snippetEnd); //TODO: uncomment
+    const addSnippetResponse = await SnippetsDatabase.addSnippet(convoId, snippetStart, snippetEnd);
     const unencryptedQuery = "convoId=" + convoId + "&snippetStart=" + snippetStart + "&snippetEnd=" + snippetEnd;
-    const encryptedQuery = Encryption.getEncryptedString(unencryptedQuery);
-    console.log("Add snippet. Encrypted: ", encryptedQuery)
-    console.log("Add snippet. Decrypted: ", Encryption.getDecryptedString(encryptedQuery));
-    return res.status(500).send({ //TODO: Delete this
-        encrypted: encryptedQuery,
-        decrypted: Encryption.getDecryptedString(encryptedQuery)
-    });
+    const encryptedQuery = Encryption.getEncryptedString(unencryptedQuery);    
     
     if(addSnippetResponse.success)
         return res.status(200).send({
-            queryParam: encryptedQuery
+            queryParam: 'val=' + encryptedQuery
         });
     else{
         return res.status(500).send({
