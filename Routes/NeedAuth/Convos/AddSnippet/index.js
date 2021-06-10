@@ -17,6 +17,18 @@ router.post('/', async(req, res)=>{
             message: 'No convo id provided'
         });
     }
+
+    if (!snippetStart) {
+        return res.status(400).send({
+            message: 'No start provided'
+        });
+    }
+
+    if (!snippetEnd) {
+        return res.status(400).send({
+            message: 'No end provided'
+        });
+    }
         
     const approvalResponse = await ConvosDatabase.getConvoApprovalInfo(convoId);
     if (!approvalResponse.success) {
