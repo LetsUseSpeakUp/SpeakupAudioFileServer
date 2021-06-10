@@ -10,10 +10,11 @@ const addSnippet = async (convoId, startTime, endTime)=>{
         
         const bindParams = [convoId, startTime, endTime];
         await DBQuerier.executeQuery(addSnippetQuery, bindParams);
+        return {success: true};
     }
     catch(error){
         console.log("ERROR -- SnippetsDatabase::addSnippet: ", error);
-        return {success: false, errorMessage: error}
+        return {success: false, errorMessage: error};
     }
 }
 

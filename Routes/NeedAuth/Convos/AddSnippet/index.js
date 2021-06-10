@@ -10,8 +10,6 @@ router.post('/', async(req, res)=>{
     const phoneNumber = req.user['https://backend.letsusespeakup.com/token/usermetadata/phone_number'] 
         || req.user['https://backend.letsusespeakup.com/token/usermetadata/metadata'].phone_number;
 
-    const addSnippetResponse = await SnippetsDatabase.addSnippet(convoId, snippetStart, snippetEnd);
-
     if (!convoId) {
         return res.status(400).send({
             message: 'No convo id provided'
@@ -54,8 +52,12 @@ router.post('/', async(req, res)=>{
         });
     }
 
+    const addSnippetResponse = await SnippetsDatabase.addSnippet(convoId, snippetStart, snippetEnd);
+
     if(addSnippetResponse.success)
-        return res.status(200);
+        return res.status(200).send({
+            message: 'added'
+        });
     else{
         return res.status(500).send({
             message: addSnippetResponse.errorMessage
