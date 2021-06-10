@@ -7,6 +7,9 @@ router.post('/', async(req, res)=>{
     const snippetStart = req.body.snippetStart;
     const snippetEnd = req.body.snippetEnd;
 
+    const phoneNumber = req.user['https://backend.letsusespeakup.com/token/usermetadata/phone_number'] 
+        || req.user['https://backend.letsusespeakup.com/token/usermetadata/metadata'].phone_number;
+
     const addSnippetResponse = await SnippetsDatabase.addSnippet(convoId, snippetStart, snippetEnd);
 
     if (!convoId) {
@@ -30,6 +33,12 @@ router.post('/', async(req, res)=>{
     if (approvalResponse.receiverApproval != 1) {
         return res.status(500).send({
             message: "receiver didn't approve"
+        });
+    }
+
+    if(phoneNumber !== metadataResponse.initiator_number && phoneNumber !== metadataResponse.receiver_number){
+        return res.status(500).send({
+            message: 'invalid phone number'
         });
     }
 
