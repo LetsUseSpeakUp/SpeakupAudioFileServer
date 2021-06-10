@@ -30,17 +30,20 @@ app.listen(port,  ()=>{
 app.use('/backend', require('./Routes'));
 
 app.use(express.static(path.join(__dirname, './react_frontend/build')));
-app.get('/playsnippet', (req, res)=>{
-    console.log("Index::query params: ", req.url);
-    // res.sendFile(path.resolve(__dirname, './react_frontend/build', 'index.html'));
+app.get('/playsnippet', (req, res)=>{    
+    const audioLink = 'http://localhost:1234/backend/open/snippets?val=' + req.query.val;
+
     const filePath = path.resolve(__dirname, './react_frontend/build', 'index.html');
     fs.readFile(filePath, 'utf8', function(err, data){
         if(err){
-            return console.log("ERROR -- main index serving /playsnippet: ", err);
+            console.log("ERROR -- main index serving /playsnippet: ", err);
+            return res.status(500).send({
+                message: 'Unable to load SpeakUp'
+            });
         }
         data = data.replace(/\$OG_TITLE/g, 'SpeakUp Snippet');
         data = data.replace(/\$OG_DESCRIPTION/g, 'Listen to this snippet from SpeakUp');
-        const result = data.replace(/\$OG_AUDIO_LINK/g, 'http://techtechandtechcom.ipage.com/rapgame/SJaFmWwSO-wont_stop_til_I_win,_Im_destined_to_win.mp4'); //TODO
+        const result = data.replace(/\$OG_AUDIO_LINK/g, audioLink);
         return res.send(result);
     })    
 })
