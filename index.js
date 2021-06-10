@@ -29,7 +29,11 @@ app.listen(port,  ()=>{
 app.use('/backend', require('./Routes'));
 
 app.use(express.static(path.join(__dirname, './react_frontend/build')));
-app.get('*', (req, res)=>{
-    console.log("Index::query params: ", req.query);
+app.get('/playsnippet', (req, res)=>{ //TODO: Inject opengraph tags
+    console.log("Index::query params: ", req.url);
+    res.sendFile(path.resolve(__dirname, './react_frontend/build', 'index.html'));
+})
+
+app.get('*', (req, res)=>{ //This is so we get a decent looking 404    
     res.sendFile(path.resolve(__dirname, './react_frontend/build', 'index.html'));
 })
