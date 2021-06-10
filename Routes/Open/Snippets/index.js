@@ -54,6 +54,8 @@ router.get('/', async (req, res) => {
     if (filePath.length > 0) {        
         res.set('content-type', 'audio/mp3');
         res.set('accept-ranges', 'bytes');
+        const stats = fs.statSync(filePath);
+        res.set('content-length', stats.size);
         const fileStream = fs.createReadStream(filePath);
         fileStream.on('data', (chunk)=>{
             console.log("/Snippets. read data");
