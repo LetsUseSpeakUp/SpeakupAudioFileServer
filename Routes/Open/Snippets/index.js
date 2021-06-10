@@ -60,6 +60,7 @@ router.get('/', async (req, res) => {
         fileStream.on('end', ()=>{
             res.end();
         })
+
     }
     else{
         return res.status(500).send({
