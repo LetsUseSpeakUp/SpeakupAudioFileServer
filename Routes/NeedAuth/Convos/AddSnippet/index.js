@@ -1,6 +1,7 @@
 const router = require('express').Router();
 const SnippetsDatabase = require('../../../../Logic/Database/SnippetsDatabase');
 const ConvosDatabase = require('../../../../Logic/Database/ConvosDatabase');
+const Encryption = require ('../../../../Logic/Encryption');
 
 router.post('/', async(req, res)=>{
     const convoId = req.body.convoId;
@@ -52,11 +53,19 @@ router.post('/', async(req, res)=>{
         });
     }
 
-    const addSnippetResponse = await SnippetsDatabase.addSnippet(convoId, snippetStart, snippetEnd);
-
+    // const addSnippetResponse = await SnippetsDatabase.addSnippet(convoId, snippetStart, snippetEnd); //TODO: uncomment
+    const unencryptedQuery = "convoId=" + convoId + "&snippetStart=" + snippetStart + "&snippetEnd=" + snippetEnd;
+    const encryptedQuery = Encryption.getEncryptedString(unencryptedQuery);
+    console.log("Add snippet. Encrypted: ", encryptedQuery)
+    console.log("Add snippet. Decrypted: ", Encryption.getDecryptedString(encryptedQuery));
+    return res.status(500).send({ //TODO: Delete this
+        encrypted: encryptedQuery,
+        decrypted: Encryption.getDecryptedString(encryptedQuery)
+    });
+    
     if(addSnippetResponse.success)
         return res.status(200).send({
-            message: 'added'
+            queryParam: encryptedQuery
         });
     else{
         return res.status(500).send({
