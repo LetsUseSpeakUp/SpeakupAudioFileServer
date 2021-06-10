@@ -53,7 +53,7 @@ router.post('/', async(req, res)=>{
         });
     }
 
-    const addSnippetResponse = await SnippetsDatabase.addSnippet(convoId, snippetStart, snippetEnd); //TODO: Put back in
+    const addSnippetResponse = await SnippetsDatabase.addSnippet(convoId, snippetStart, snippetEnd);
     const unencryptedQuery = "convoId=" + convoId + "&snippetStart=" + snippetStart + "&snippetEnd=" + snippetEnd;
     const encryptedQuery = Encryption.getEncryptedString(unencryptedQuery);                
     
