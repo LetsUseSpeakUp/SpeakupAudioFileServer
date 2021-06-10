@@ -33,7 +33,7 @@ router.get('/', async (req, res) => {
         });
     }
 
-    const isValidSnippet = await SnippetsDatabase.doesSnippetExistInDb(convoId, snippetStart, snippetEnd);
+    const isValidSnippet = await SnippetsDatabase.doesSnippetExistInDB(convoId, snippetStart, snippetEnd);
     if(!isValidSnippet){
         return res.status(500).send({
             message: 'invalid snippet'
