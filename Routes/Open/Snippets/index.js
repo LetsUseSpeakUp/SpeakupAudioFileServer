@@ -1,6 +1,7 @@
 const router = require('express').Router();
 const ConvosFileManager = require('../../../Logic/ConvosFileManager');
 const ConvosDatabase = require('../../../Logic/Database/ConvosDatabase');
+const SnippetsDatabase = require('../../../Logic/Database/SnippetsDatabase');
 const fs = require('fs');
 
 router.get('/', async (req, res) => {    
@@ -29,6 +30,13 @@ router.get('/', async (req, res) => {
     if (approvalResponse.receiverApproval != 1) {
         return res.status(500).send({
             message: "receiver didn't approve"
+        });
+    }
+
+    const isValidSnippet = await SnippetsDatabase.doesSnippetExistInDb(convoId, snippetStart, snippetEnd);
+    if(!isValidSnippet){
+        return res.status(500).send({
+            message: 'invalid snippet'
         });
     }
 
