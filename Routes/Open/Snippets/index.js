@@ -1,6 +1,7 @@
 const router = require('express').Router();
 const ConvosFileManager = require('../../../Logic/ConvosFileManager');
 const ConvosDatabase = require('../../../Logic/Database/ConvosDatabase');
+const fs = require('fs');
 
 router.get('/', async (req, res) => {    
     const convoId = req.query.convoId;
@@ -43,12 +44,29 @@ router.get('/', async (req, res) => {
     }
     
     if (filePath.length > 0) {        
-        return res.download(filePath);
+        res.set('content-type', 'audio/mp3');
+        res.set('accept-ranges', 'bytes');
+        const fileStream = fs.createReadStream(filePath);
+        fileStream.on('data', (chunk)=>{
+            console.log("/Snippets. read data");
+            res.write(chunk);
+        })
+        fileStream.on('error', (error)=>{
+            console.log("ERROR -- /Snippets: ", error);
+            res.status(500).send({                
+                message: 'error sending stream'
+            });
+        })
+        fileStream.on('end', ()=>{
+            res.end();
+        })
     }
-
-    return res.status(500).send({
-        message: 'error getting snippet (2)'
-    });
+    else{
+        return res.status(500).send({
+            message: 'error getting snippet (2)'
+        });
+    }
+    
 })
 
 module.exports = router;
