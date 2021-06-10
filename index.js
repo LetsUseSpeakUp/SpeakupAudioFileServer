@@ -30,5 +30,6 @@ app.use('/backend', require('./Routes'));
 
 app.use(express.static(path.join(__dirname, './react_frontend/build')));
 app.get('*', (req, res)=>{
+    console.log("Index::query params: ", req.query);
     res.sendFile(path.resolve(__dirname, './react_frontend/build', 'index.html'));
 })
