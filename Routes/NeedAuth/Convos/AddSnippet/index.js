@@ -36,7 +36,7 @@ router.post('/', async(req, res)=>{
         });
     }
 
-    if(phoneNumber !== metadataResponse.initiator_number && phoneNumber !== metadataResponse.receiver_number){
+    if(phoneNumber !== approvalResponse.initiatorNumber && phoneNumber !== approvalResponse.receiverNumber){
         return res.status(500).send({
             message: 'invalid phone number'
         });
