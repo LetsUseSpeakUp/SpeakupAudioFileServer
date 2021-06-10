@@ -12,7 +12,7 @@ const convertIdToFilePath = (convoId, extension = ".aac")=>{
 }
 
 /**
- * Converts the AAC to MP3 and saves it in ./Uploaded_Convos/converted_to_mp3
+ * Converts the AAC to MP3 and saves it
  */
 const convertAACToMP3 = async (aacFilePath)=>{
     return new Promise((res, rej)=>{
