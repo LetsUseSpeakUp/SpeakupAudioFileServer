@@ -40,18 +40,18 @@ router.post('/', async (req, res) => {
     const filePath = ConvosFileManager.convertIdToFilePath(metadata.convoId)
     convoFile.mv(filePath);
     const uploadResponse = await ConvosDatabase.finalizeConvo(filePath, convoMetadata);
-    const successfullyConverted = await ConvosFileManager.convertAACToMP3(filePath);
+    const conversionResponse = await ConvosFileManager.convertAACToMP3(filePath);
     if(!uploadResponse.success){
         return res.status(500).send({
             message: uploadResponse.errorMessage
         })
     }
-    if(!successfullyConverted){
+    if(!conversionResponse.success){
         return res.status(500).send({
             message: 'failed to convert'
         })
     }
-    
+
     return res.send({
         message: 'successfully uploaded'
     });

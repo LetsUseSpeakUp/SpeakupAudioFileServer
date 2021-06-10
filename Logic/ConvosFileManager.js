@@ -19,10 +19,10 @@ const convertAACToMP3 = async (aacFilePath)=>{
         const mp3FilePath = aacFilePath.slice(0, aacFilePath.length-4) + '.mp3';
         const startTime = Date.now();
         exec('ffmpeg -y -i ' + aacFilePath + ' ' + mp3FilePath, (error, stdout, stderr)=>{
-            if(error) rej(error);
+            if(error) rej({success: false, errorMessage: error});
             const endTime = Date.now();
             console.log("ConvosFileManager::convertAACToMP3. conversion time: ", (endTime - startTime));
-            res('');
+            res({success: true});
         })
     })
 }
