@@ -13,7 +13,8 @@ router.get('/', async (req, res) => {
             message: 'no query'
         })
     }
-    const decrypted = Encryption.getDecryptedString(encrypted);
+    let decrypted = Encryption.getDecryptedString(encrypted);
+    decrypted = decrypted.replace('+', '%2b');
     const parsedQuery = querystring.parse(decrypted);
         
     const convoId = parsedQuery['convoId'];
@@ -59,6 +60,12 @@ router.get('/', async (req, res) => {
         console.log("ERROR -- Snippets: ", error);
         return res.status(500).send({
             message: 'error getting snippet'
+        });
+    }
+
+    if(!fs.existsSync(filePath)){
+        return res.status(500).send({
+            message: 'file not found'
         });
     }
     
