@@ -1,5 +1,13 @@
+/**
+ * Make sure that all files that are directly served to the user
+ * (not streamed, but served) have the convoID encrypted.
+ * Otherwise, people will be able to read the phone numbers from the
+ * snippets' convoIds.
+ */
 const MP3Cutter = require('./mp3-cutter');
 const { exec } = require('child_process');
+const Encryption = require('./Encryption');
+
 
 /**
  * Path is based off root
@@ -8,6 +16,7 @@ const { exec } = require('child_process');
  * @returns 
  */
 const convertIdToFilePath = (convoId, extension = ".aac") => {
+    convoId = Encryption.getEncryptedString(convoId);
     return ('./Uploaded_Convos/' + convoId + extension);
 }
 
@@ -28,6 +37,7 @@ const convertAACToMP3 = async (aacFilePath) => {
 }
 
 const getSnippet = (convoId, snippetStart, snippetEnd) => {
+    convoId = Encryption.getEncryptedString(convoId);
     const outputFile = './Uploaded_Convos/' + convoId + '_' + snippetStart + '_' + snippetEnd + '.mp3';
     return outputFile;
 }
@@ -45,12 +55,14 @@ const getSnippet = (convoId, snippetStart, snippetEnd) => {
  * @returns 
  */
 const getSnippetRichPreviewMp4 = (convoId, snippetStart, snippetEnd) => {
+    convoId = Encryption.getEncryptedString(convoId);
     const outputFile = './Uploaded_Convos/' + convoId + '_' + snippetStart + '_' + snippetEnd + '.mp4'; 
     return outputFile;
 }
 
 const createSnippet = async (convoId, snippetStart, snippetEnd) => {
     try {
+        convoId = Encryption.getEncryptedString(convoId);
         const sourceFile = './Uploaded_Convos/' + convoId + '.mp3';
         const snippedMp3 = './Uploaded_Convos/' + convoId + '_' + snippetStart + '_' + snippetEnd + '.mp3';
         const mp4 = './Uploaded_Convos/' + convoId + '_' + snippetStart + '_' + snippetEnd + '.mp4';
