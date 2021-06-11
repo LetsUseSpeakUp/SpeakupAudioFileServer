@@ -21,6 +21,7 @@
     "app-root-path": "^3.0.0",
     "auth0": "^2.35.0",
     "aws-sdk": "^2.921.0",
+    "base64-url": "^2.3.3",
     "body-parser": "^1.19.0",
     "cors": "^2.8.5",
     "dotenv": "^10.0.0",
@@ -30,7 +31,8 @@
     "express-jwt-authz": "^2.4.1",
     "jwks-rsa": "^2.0.3",
     "morgan": "^1.10.0",
-    "mysql2": "^2.2.5"
+    "mysql2": "^2.2.5",
+    "videoshow": "^0.1.12"
   },
   "devDependencies": {
     "@types/node": "^15.6.1",
