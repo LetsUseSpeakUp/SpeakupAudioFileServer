@@ -39,8 +39,8 @@ const createSnippet = async(convoId, snippetStart, snippetEnd)=>{
         const snippedMp3 = './Uploaded_Convos/' + convoId + '_' + snippetStart + '_' + snippetEnd + '.mp3';
         const finalSnippet = './Uploaded_Convos/' + convoId + '_' + snippetStart + '_' + snippetEnd + '.mp4';
         snipMP3(sourceFile, snippedMp3, snippetStart, snippetEnd);
-        await generateMP4FromMP3(snippedMp3, (snippetEnd-snippetStart), finalSnippet);    
-        return {success: true}
+        const conversionResult = await generateMP4FromMP3(snippedMp3, finalSnippet);    
+        return conversionResult;
     }
     catch(error){
         console.error("ERROR -- ConvosFileManager::createSnippet: ", error);
@@ -57,35 +57,18 @@ const snipMP3 = (mp3Source, mp3Output, snippetStart, snippetEnd)=>{
     });
 }
 
-const generateMP4FromMP3 = async(mp3Source, lengthInSeconds, mp4Output)=>{
-    const images = ['mainImage.png'];
-    const videoOptions = {
-        fps: 1,
-    loop: lengthInSeconds, // seconds
-  transition: false,  
-  videoBitrate: 1024,
-  videoCodec: 'libx264',
-  size: '640x?',
-  audioBitrate: '128k',
-  audioChannels: 2,
-  format: 'mp4',
-  pixelFormat: 'yuv420p'
-    };
-    return new Promise((resolve, reject)=>{
-        videoshow(images, videoOptions)
-            .audio(mp3Source)
-            .save(mp4Output)
-            .on('error', (err, stdout, stderr)=>{
-                console.error("ConvosFileManager::generateMP4");
-                if(err) reject(err);
-            })
-            .on('end', (outputFile)=>{
-                console.log('ConvosFileManager::generateMP4. Output file: ', outputFile);
-                resolve();
-            })
-            .on('start', ()=>{
-                console.log("ConvosFileManager::generateMP4FromMP3. Started");
-            })
+const generateMP4FromMP3 = async(mp3Source, mp4Output)=>{
+    const imageSource = 'mainImage.png';
+    return new Promise((res, rej)=>{
+        const startTime = Date.now();
+        exec('ffmpeg -y -loop 1 -i ' + imageSource + ' -i ' + mp3Source + ' -shortest -c:v libx264 -c:a copy '
+            + mp4Output, (error, stdout, stderr)=>{
+            if(error) rej({success: false, errorMessage: error});
+            
+            const endTime = Date.now();
+            console.log("ConvosFileManager::generateMP4FromMP3. conversion time: ", (endTime - startTime));
+            res({success: true});
+        })
     })
 }
 
