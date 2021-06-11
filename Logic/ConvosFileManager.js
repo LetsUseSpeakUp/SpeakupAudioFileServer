@@ -35,11 +35,14 @@ const getSnippet = (convoId, snippetStart, snippetEnd)=>{
 
 const createSnippet = async(convoId, snippetStart, snippetEnd)=>{
     try{
+        console.log("ConvosFileManager::createSnippet. 1");
         const sourceFile = './Uploaded_Convos/' + convoId + '.mp3';
         const snippedMp3 = './Uploaded_Convos/' + convoId + '_' + snippetStart + '_' + snippetEnd + '.mp3';
         const finalSnippet = './Uploaded_Convos/' + convoId + '_' + snippetStart + '_' + snippetEnd + '.mp4';
         snipMP3(sourceFile, snippedMp3, snippetStart, snippetEnd);
+        console.log("ConvosFileManager::createSnippet. 2");
         await generateMP4FromMP3(snippedMp3, finalSnippet);    
+        console.log("ConvosFileManager::createSnippet. 3");
         return {success: true}
     }
     catch(error){
@@ -60,21 +63,32 @@ const snipMP3 = (mp3Source, mp3Output, snippetStart, snippetEnd)=>{
 const generateMP4FromMP3 = async(mp3Source, mp4Output)=>{
     const images = ['mainImage.png'];
     const videoOptions = {
-        fps: 1,
-        loop: 10000,
-        transition: false,
-        format: 'mp4'
+        fps: 25,
+  loop: 5, // seconds
+  transition: true,
+  transitionDuration: 1, // seconds
+  videoBitrate: 1024,
+  videoCodec: 'libx264',
+  size: '640x?',
+  audioBitrate: '128k',
+  audioChannels: 2,
+  format: 'mp4',
+  pixelFormat: 'yuv420p'
     };
     return new Promise((resolve, reject)=>{
         videoshow(images, videoOptions)
             .audio(mp3Source)
             .save(mp4Output)
             .on('error', (err, stdout, stderr)=>{
+                console.error("ConvosFileManager::generateMP4");
                 if(err) reject(err);
             })
             .on('end', (timeTaken)=>{
-                console.long('ConvosFileManager::generateMP4FromMP3. Time: ', timeTaken);
+                console.log('ConvosFileManager::generateMP4FromMP3. Time: ', timeTaken);
                 resolve();
+            })
+            .on('start', ()=>{
+                console.log("ConvosFileManager::generateMP4FromMP3. Started");
             })
     })
 }
