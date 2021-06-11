@@ -31,11 +31,7 @@ app.use('/backend', require('./Routes'));
 
 app.use(express.static(path.join(__dirname, './react_frontend/build')));
 app.get('/playsnippet', (req, res)=>{    
-    const audioLink = 'http://localhost:1234/backend/open/snippets/mp4preview?val=' + req.query.val;
-    // const audioLink = 'http://techtechandtechcom.ipage.com/rapgame/SJaFmWwSO-wont_stop_til_I_win,_Im_destined_to_win.mp4';
-    // const audioLink ='https://file-examples-com.github.io/uploads/2017/11/file_example_MP3_700KB.mp3';
-    // const audioLink ='https://file-examples-com.github.io/uploads/2017/04/file_example_MP4_480_1_5MG.mp4';
-    // const audioLink = 'http://localhost:1234/backend/open/snippets?val=6a1ce8c9428369692692742e5ae319327b17fcdc4d9cc4a56d2191393774a99c1b970069231ac72d10b5ea57c8b6f2dc';
+    const audioLink = 'https://letsusespeakup.com/backend/open/snippets/mp4preview?val=' + req.query.val;
 
     const filePath = path.resolve(__dirname, './react_frontend/build', 'index.html');
     fs.readFile(filePath, 'utf8', function(err, data){
