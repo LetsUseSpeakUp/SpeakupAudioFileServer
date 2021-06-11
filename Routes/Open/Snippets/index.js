@@ -105,6 +105,7 @@ router.get('/mp4Preview',  async (req, res)=>{
         })
     }
     const decrypted = Encryption.getDecryptedString(encrypted);
+    decrypted = decrypted.replace('+', '%2b');
     const parsedQuery = querystring.parse(decrypted);
         
     const convoId = parsedQuery['convoId'];
