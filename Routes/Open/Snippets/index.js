@@ -104,7 +104,7 @@ router.get('/mp4Preview',  async (req, res)=>{
             message: 'no query'
         })
     }
-    const decrypted = Encryption.getDecryptedString(encrypted);
+    let decrypted = Encryption.getDecryptedString(encrypted);
     decrypted = decrypted.replace('+', '%2b');
     const parsedQuery = querystring.parse(decrypted);
         
