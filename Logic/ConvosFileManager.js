@@ -63,10 +63,9 @@ const snipMP3 = (mp3Source, mp3Output, snippetStart, snippetEnd)=>{
 const generateMP4FromMP3 = async(mp3Source, mp4Output)=>{
     const images = ['mainImage.png'];
     const videoOptions = {
-        fps: 25,
-  loop: 5, // seconds
-  transition: true,
-  transitionDuration: 1, // seconds
+        fps: 1,
+    loop: 5, // seconds
+  transition: false,  
   videoBitrate: 1024,
   videoCodec: 'libx264',
   size: '640x?',
@@ -83,8 +82,8 @@ const generateMP4FromMP3 = async(mp3Source, mp4Output)=>{
                 console.error("ConvosFileManager::generateMP4");
                 if(err) reject(err);
             })
-            .on('end', (timeTaken)=>{
-                console.log('ConvosFileManager::generateMP4FromMP3. Time: ', timeTaken);
+            .on('end', (outputFile)=>{
+                console.log('ConvosFileManager::generateMP4. Output file: ', outputFile);
                 resolve();
             })
             .on('start', ()=>{
