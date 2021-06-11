@@ -63,7 +63,8 @@ router.get('/', async (req, res) => {
     }
     
     if (filePath.length > 0) {        
-        res.set('content-type', 'audio/mp3');
+        res.download(filePath); //TODO Test
+     /*   res.set('content-type', 'audio/mp3');
         res.set('accept-ranges', 'bytes');
         const stats = fs.statSync(filePath);
         res.set('content-length', stats.size);
@@ -80,7 +81,7 @@ router.get('/', async (req, res) => {
         })
         fileStream.on('end', ()=>{
             res.end();
-        })
+        }) */
 
     }
     else{

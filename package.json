@@ -31,7 +31,8 @@
     "express-jwt-authz": "^2.4.1",
     "jwks-rsa": "^2.0.3",
     "morgan": "^1.10.0",
-    "mysql2": "^2.2.5"
+    "mysql2": "^2.2.5",
+    "videoshow": "^0.1.12"
   },
   "devDependencies": {
     "@types/node": "^15.6.1",

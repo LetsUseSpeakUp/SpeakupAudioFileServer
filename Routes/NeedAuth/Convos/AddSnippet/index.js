@@ -1,14 +1,15 @@
 const router = require('express').Router();
 const SnippetsDatabase = require('../../../../Logic/Database/SnippetsDatabase');
 const ConvosDatabase = require('../../../../Logic/Database/ConvosDatabase');
-const Encryption = require ('../../../../Logic/Encryption');
+const ConvosFileManager = require('../../../../Logic/ConvosFileManager');
+const Encryption = require('../../../../Logic/Encryption');
 
-router.post('/', async(req, res)=>{
+router.post('/', async (req, res) => {
     const convoId = req.body.convoId;
     const snippetStart = req.body.snippetStart;
     const snippetEnd = req.body.snippetEnd;
 
-    const phoneNumber = req.user['https://backend.letsusespeakup.com/token/usermetadata/phone_number'] 
+    const phoneNumber = req.user['https://backend.letsusespeakup.com/token/usermetadata/phone_number']
         || req.user['https://backend.letsusespeakup.com/token/usermetadata/metadata'].phone_number;
 
     if (!convoId) {
@@ -28,7 +29,7 @@ router.post('/', async(req, res)=>{
             message: 'No end provided'
         });
     }
-        
+
     const approvalResponse = await ConvosDatabase.getConvoApprovalInfo(convoId);
     if (!approvalResponse.success) {
         return res.status(500).send({
@@ -47,25 +48,31 @@ router.post('/', async(req, res)=>{
         });
     }
 
-    if(phoneNumber !== approvalResponse.initiatorNumber && phoneNumber !== approvalResponse.receiverNumber){
+    if (phoneNumber !== approvalResponse.initiatorNumber && phoneNumber !== approvalResponse.receiverNumber) {
         return res.status(500).send({
             message: 'invalid phone number'
         });
     }
 
     const addSnippetResponse = await SnippetsDatabase.addSnippet(convoId, snippetStart, snippetEnd);
+    const createSnippetResponse = await ConvosFileManager.createSnippet(convoId, snippetStart, snippetEnd);
     const unencryptedQuery = "convoId=" + convoId + "&snippetStart=" + snippetStart + "&snippetEnd=" + snippetEnd;
-    const encryptedQuery = Encryption.getEncryptedString(unencryptedQuery);                
-    
-    if(addSnippetResponse.success)
-        return res.status(200).send({
-            queryParam: 'val=' + encryptedQuery
-        });
-    else{
+    const encryptedQuery = Encryption.getEncryptedString(unencryptedQuery);
+
+    if (!addSnippetResponse.success) {
         return res.status(500).send({
             message: addSnippetResponse.errorMessage
         });
     }
+    if (!createSnippetResponse.success) {
+        return res.status(500).send({
+            message: createSnippetResponse.errorMessage
+        });
+    }
+
+    return res.status(200).send({
+        queryParam: 'val=' + encryptedQuery
+    });
 })
 
 module.exports = router;
