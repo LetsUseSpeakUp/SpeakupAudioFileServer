@@ -29,8 +29,24 @@ const convertAACToMP3 = async (aacFilePath) => {
 }
 
 const getSnippet = (convoId, snippetStart, snippetEnd) => {
-    const outputFile = './Uploaded_Convos/' + convoId + '_' + snippetStart + '_' + snippetEnd + '.mp4'; //TODO   
-    // const outputFile = './Uploaded_Convos/' + convoId + '_' + snippetStart + '_' + snippetEnd + '.mp3';    
+    const outputFile = './Uploaded_Convos/' + convoId + '_' + snippetStart + '_' + snippetEnd + '.mp3';
+    return outputFile;
+}
+
+/**
+ * Returns a (possibly truncated) mp4 of the snippet.
+ * getSnippet should be used rather than this method in all cases,
+ * except when trying to serve a rich preview for iMessage.
+ * 
+ * If the snippet is truncated (as of writing this comment, it is truncated at 20 seconds),
+ * it will have an MP4 image that says it is only a preview.
+ * @param {*} convoId 
+ * @param {*} snippetStart 
+ * @param {*} snippetEnd 
+ * @returns 
+ */
+const getSnippetRichPreviewMp4 = (convoId, snippetStart, snippetEnd) => {
+    const outputFile = './Uploaded_Convos/' + convoId + '_' + snippetStart + '_' + snippetEnd + '.mp4'; 
     return outputFile;
 }
 
@@ -38,9 +54,9 @@ const createSnippet = async (convoId, snippetStart, snippetEnd) => {
     try {
         const sourceFile = './Uploaded_Convos/' + convoId + '.mp3';
         const snippedMp3 = './Uploaded_Convos/' + convoId + '_' + snippetStart + '_' + snippetEnd + '.mp3';
-        const finalSnippet = './Uploaded_Convos/' + convoId + '_' + snippetStart + '_' + snippetEnd + '.mp4';
+        const mp4 = './Uploaded_Convos/' + convoId + '_' + snippetStart + '_' + snippetEnd + '.mp4';
         snipMP3(sourceFile, snippedMp3, snippetStart, snippetEnd);
-        await generateMP4FromMP3(snippedMp3, finalSnippet, (snippetEnd - snippetStart));
+        await generateMP4FromMP3(snippedMp3, mp4, (snippetEnd - snippetStart));
         return {success: true};
     }
     catch (error) {
@@ -59,10 +75,12 @@ const snipMP3 = (mp3Source, mp3Output, snippetStart, snippetEnd) => {
 }
 
 const generateMP4FromMP3 = async (mp3Source, mp4Output, lengthInSeconds) => {
-    const images = ['mainImage.png'];
+    const maxLength = 20;
+
+    const images = lengthInSeconds > maxLength ? ['mainImage_preview.png'] : ['mainImage.png'];
     const videoOptions = {
         fps: 1,
-        loop: lengthInSeconds, // seconds
+        loop: lengthInSeconds > maxLength ? maxLength: lengthInSeconds,
         transition: false,
         videoBitrate: 1024,
         videoCodec: 'libx264',
@@ -92,5 +110,6 @@ const generateMP4FromMP3 = async (mp3Source, mp4Output, lengthInSeconds) => {
 
 exports.convertIdToFilePath = convertIdToFilePath;
 exports.getSnippet = getSnippet;
+exports.getSnippetRichPreviewMp4 = getSnippetRichPreviewMp4;
 exports.convertAACToMP3 = convertAACToMP3;
 exports.createSnippet = createSnippet;
