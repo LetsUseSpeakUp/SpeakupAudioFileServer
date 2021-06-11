@@ -104,7 +104,6 @@ router.get('/mp4Preview',  async (req, res)=>{
     const snippetStart = parsedQuery['snippetStart'];
     const snippetEnd = parsedQuery['snippetEnd'];
     
-    
     if (!convoId) {
         return res.status(400).send({
             message: 'No convo id provided'

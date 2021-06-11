@@ -1,6 +1,5 @@
 const MP3Cutter = require('./mp3-cutter');
 const { exec } = require('child_process');
-const videoshow = require('videoshow');
 
 /**
  * Path is based off root
