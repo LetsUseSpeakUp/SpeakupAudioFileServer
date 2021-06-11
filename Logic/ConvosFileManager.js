@@ -35,14 +35,11 @@ const getSnippet = (convoId, snippetStart, snippetEnd)=>{
 
 const createSnippet = async(convoId, snippetStart, snippetEnd)=>{
     try{
-        console.log("ConvosFileManager::createSnippet. 1");
         const sourceFile = './Uploaded_Convos/' + convoId + '.mp3';
         const snippedMp3 = './Uploaded_Convos/' + convoId + '_' + snippetStart + '_' + snippetEnd + '.mp3';
         const finalSnippet = './Uploaded_Convos/' + convoId + '_' + snippetStart + '_' + snippetEnd + '.mp4';
         snipMP3(sourceFile, snippedMp3, snippetStart, snippetEnd);
-        console.log("ConvosFileManager::createSnippet. 2");
-        await generateMP4FromMP3(snippedMp3, finalSnippet);    
-        console.log("ConvosFileManager::createSnippet. 3");
+        await generateMP4FromMP3(snippedMp3, (snippetEnd-snippetStart), finalSnippet);    
         return {success: true}
     }
     catch(error){
@@ -60,11 +57,11 @@ const snipMP3 = (mp3Source, mp3Output, snippetStart, snippetEnd)=>{
     });
 }
 
-const generateMP4FromMP3 = async(mp3Source, mp4Output)=>{
+const generateMP4FromMP3 = async(mp3Source, lengthInSeconds, mp4Output)=>{
     const images = ['mainImage.png'];
     const videoOptions = {
         fps: 1,
-    loop: 5, // seconds
+    loop: lengthInSeconds, // seconds
   transition: false,  
   videoBitrate: 1024,
   videoCodec: 'libx264',
