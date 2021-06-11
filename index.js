@@ -30,8 +30,9 @@ app.listen(port,  ()=>{
 app.use('/backend', require('./Routes'));
 
 app.use(express.static(path.join(__dirname, './react_frontend/build')));
-app.get('/playsnippet', (req, res)=>{    
-    const audioLink = 'https://letsusespeakup.com/backend/open/snippets/mp4preview?val=' + req.query.val;
+app.get('/playsnippet', (req, res)=>{        
+    const previewLink = 'https://letsusespeakup.com/backend/open/snippets/mp4preview?val=' + req.query.val;
+    console.log("Index. /playsnippet. Preview link: ", previewLink);
 
     const filePath = path.resolve(__dirname, './react_frontend/build', 'index.html');
     fs.readFile(filePath, 'utf8', function(err, data){
@@ -43,7 +44,7 @@ app.get('/playsnippet', (req, res)=>{
         }
         data = data.replace(/\$OG_TITLE/g, 'SpeakUp Snippet');
         data = data.replace(/\$OG_DESCRIPTION/g, 'Listen to this snippet from SpeakUp');
-        const result = data.replace(/\$OG_AUDIO_LINK/g, audioLink);
+        const result = data.replace(/\$OG_AUDIO_LINK/g, previewLink);
         return res.send(result);
     })    
 })
