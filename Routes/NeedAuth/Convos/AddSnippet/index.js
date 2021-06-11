@@ -8,6 +8,7 @@ router.post('/', async (req, res) => {
     const convoId = req.body.convoId;
     const snippetStart = req.body.snippetStart;
     const snippetEnd = req.body.snippetEnd;
+    const snippetDescription = req.body.snippetDescription ?? '';
 
     const phoneNumber = req.user['https://backend.letsusespeakup.com/token/usermetadata/phone_number']
         || req.user['https://backend.letsusespeakup.com/token/usermetadata/metadata'].phone_number;
@@ -56,8 +57,9 @@ router.post('/', async (req, res) => {
 
     const addSnippetResponse = await SnippetsDatabase.addSnippet(convoId, snippetStart, snippetEnd);
     const createSnippetResponse = await ConvosFileManager.createSnippet(convoId, snippetStart, snippetEnd);
-    const unencryptedQuery = "convoId=" + convoId + "&snippetStart=" + snippetStart + "&snippetEnd=" + snippetEnd;    
+    const unencryptedQuery = "convoId=" + convoId + "&snippetStart=" + snippetStart + "&snippetEnd=" + snippetEnd + '&snippetDescription=' + snippetDescription;    
     const encryptedQuery = Encryption.getEncryptedString(unencryptedQuery);
+    const snippetLink = 'https://letsusespeakup.com/playsnippet?val=' + encryptedQuery;
 
     if (!addSnippetResponse.success) {
         return res.status(500).send({
@@ -71,7 +73,7 @@ router.post('/', async (req, res) => {
     }
 
     return res.status(200).send({
-        queryParam: 'val=' + encryptedQuery
+        snippetLink: snippetLink
     });
 })
 
