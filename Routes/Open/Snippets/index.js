@@ -62,9 +62,11 @@ router.get('/', async (req, res) => {
         });
     }
     
-    if (filePath.length > 0) {        
-        res.download(filePath); //TODO Test
-     /*   res.set('content-type', 'audio/mp3');
+    if (filePath.length > 0) {       
+        console.log("/Snippets. FilePath: ", filePath);
+        res.download(filePath); //TODO
+        return res.status(200);
+        res.set('content-type', 'video/mp4');
         res.set('accept-ranges', 'bytes');
         const stats = fs.statSync(filePath);
         res.set('content-length', stats.size);
@@ -81,7 +83,7 @@ router.get('/', async (req, res) => {
         })
         fileStream.on('end', ()=>{
             res.end();
-        }) */
+        })
 
     }
     else{

@@ -29,7 +29,8 @@ const convertAACToMP3 = async (aacFilePath)=>{
 }
 
 const getSnippet = (convoId, snippetStart, snippetEnd)=>{    
-    const outputFile = './Uploaded_Convos/' + convoId + '_' + snippetStart + '_' + snippetEnd + '.mp4';    
+    const outputFile = './Uploaded_Convos/' + convoId + '_' + snippetStart + '_' + snippetEnd + '.mp4'; //TODO   
+    // const outputFile = './Uploaded_Convos/' + convoId + '_' + snippetStart + '_' + snippetEnd + '.mp3';    
     return outputFile;
 }
 
@@ -39,7 +40,7 @@ const createSnippet = async(convoId, snippetStart, snippetEnd)=>{
         const snippedMp3 = './Uploaded_Convos/' + convoId + '_' + snippetStart + '_' + snippetEnd + '.mp3';
         const finalSnippet = './Uploaded_Convos/' + convoId + '_' + snippetStart + '_' + snippetEnd + '.mp4';
         snipMP3(sourceFile, snippedMp3, snippetStart, snippetEnd);
-        const conversionResult = await generateMP4FromMP3(snippedMp3, finalSnippet);    
+        const conversionResult = await generateMP4FromMP3(snippedMp3, finalSnippet);    //TODO
         return conversionResult;
     }
     catch(error){
@@ -61,7 +62,7 @@ const generateMP4FromMP3 = async(mp3Source, mp4Output)=>{
     const imageSource = 'mainImage.png';
     return new Promise((res, rej)=>{
         const startTime = Date.now();
-        exec('ffmpeg -y -loop 1 -i ' + imageSource + ' -i ' + mp3Source + ' -shortest -c:v libx264 -c:a copy '
+        exec('ffmpeg -y -loop 1 -i ' + imageSource + ' -i ' + mp3Source + ' -shortest -vf format=yuv420p -c:v libx264 -c:a copy '
             + mp4Output, (error, stdout, stderr)=>{
             if(error) rej({success: false, errorMessage: error});
             
