@@ -88,7 +88,7 @@ router.get('/', async (req, res) => {
             message: 'error getting snippet (2)'
         });
     }    
-})
+}) 
 
 router.get('/mp4Preview',  async (req, res)=>{
     const encrypted = req.query.val;
@@ -103,6 +103,7 @@ router.get('/mp4Preview',  async (req, res)=>{
     const convoId = parsedQuery['convoId'];
     const snippetStart = parsedQuery['snippetStart'];
     const snippetEnd = parsedQuery['snippetEnd'];
+    
     
     if (!convoId) {
         return res.status(400).send({
