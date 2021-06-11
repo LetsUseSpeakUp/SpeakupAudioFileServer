@@ -32,7 +32,6 @@ app.use('/backend', require('./Routes'));
 app.use(express.static(path.join(__dirname, './react_frontend/build')));
 app.get('/playsnippet', (req, res)=>{        
     const previewLink = 'https://letsusespeakup.com/backend/open/snippets/mp4preview?val=' + req.query.val;
-    console.log("Index. /playsnippet. Preview link: ", previewLink);
 
     const filePath = path.resolve(__dirname, './react_frontend/build', 'index.html');
     fs.readFile(filePath, 'utf8', function(err, data){
