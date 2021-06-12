@@ -146,4 +146,22 @@ router.get('/mp4Preview',  async (req, res)=>{
     }  
 })
 
+router.get('/snippetDescription', (req, res)=>{
+    const encrypted = req.query.val;
+    if(!encrypted){
+        return res.status(400).send({
+            message: 'no query'
+        })
+    }
+    let decrypted = Encryption.getDecryptedString(encrypted);
+    decrypted = decrypted.replace('+', '%2b');
+    const parsedQuery = querystring.parse(decrypted);
+
+    const description = parsedQuery['snippetDescription'];
+
+    return res.status(200).send({
+        description: description
+    });
+})
+
 module.exports = router;
