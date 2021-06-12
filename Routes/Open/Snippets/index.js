@@ -70,7 +70,7 @@ router.get('/', async (req, res) => {
     }
     
     if (filePath.length > 0) {               
-        res.set('content-type', 'video/mp4');
+        res.set('content-type', 'audio/mp3');
         res.set('accept-ranges', 'bytes');
         const stats = fs.statSync(filePath);
         res.set('content-length', stats.size);
