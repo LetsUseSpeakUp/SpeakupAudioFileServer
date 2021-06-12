@@ -6,6 +6,8 @@ const bodyParser = require('body-parser');
 const morgan = require('morgan');
 const path = require('path');
 const fs = require('fs');
+const querystring = require('querystring');
+const Encryption = require('./Logic/Encryption')
 
 global.reqlib = require('app-root-path').require;
 
@@ -33,6 +35,11 @@ app.use(express.static(path.join(__dirname, './react_frontend/build')));
 app.get('/playsnippet', (req, res)=>{        
     const previewLink = 'https://letsusespeakup.com/backend/open/snippets/mp4preview?val=' + req.query.val;
 
+    let decrypted = Encryption.getDecryptedString(req.query.val);
+    decrypted = decrypted.replace('+', '%2b');
+    const parsedQuery = querystring.parse(decrypted);        
+    const openGraphTitle = parsedQuery['snippetDescription'] ?? 'SpeakUp Snippet';    
+
     const filePath = path.resolve(__dirname, './react_frontend/build', 'index.html');
     fs.readFile(filePath, 'utf8', function(err, data){
         if(err){
@@ -41,8 +48,8 @@ app.get('/playsnippet', (req, res)=>{
                 message: 'Unable to load SpeakUp'
             });
         }
-        data = data.replace(/\$OG_TITLE/g, 'SpeakUp Snippet');
-        data = data.replace(/\$OG_DESCRIPTION/g, 'Listen to this snippet from SpeakUp');
+        data = data.replace(/\$OG_TITLE/g, openGraphTitle);
+        data = data.replace(/\$OG_DESCRIPTION/g, 'Snippet from SpeakUp');
         const result = data.replace(/\$OG_AUDIO_LINK/g, previewLink);
         return res.send(result);
     })    
