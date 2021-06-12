@@ -17,8 +17,8 @@ CREATE TABLE convos (
 
 CREATE TABLE snippets (
 	convo_id VARCHAR(255) NOT NULL,
-	start_time FLOAT NOT NULL,
-	end_time FLOAT NOT NULL,
+	start_time DOUBLE NOT NULL,
+	end_time DOUBLE NOT NULL,
 	description VARCHAR(255) NULL,
 	FOREIGN KEY (convo_id) REFERENCES convos(id)
 );

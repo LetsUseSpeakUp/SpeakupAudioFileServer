@@ -45,6 +45,7 @@ router.get('/', async (req, res) => {
         });
     }
 
+    console.log("/Snippets. Does snippet exist in db. id: ", convoId, " start: ", snippetStart, " end: ", snippetEnd);
     const isValidSnippet = await SnippetsDatabase.doesSnippetExistInDB(convoId, snippetStart, snippetEnd);
     if(!isValidSnippet){
         return res.status(500).send({
