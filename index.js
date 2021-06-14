@@ -37,7 +37,6 @@ app.get('/playsnippet', (req, res)=>{
     // const previewLink = 'http://localhost:1234/backend/open/snippets/mp4preview?val=' + req.query.val;
 
     let decrypted = Encryption.getDecryptedString(req.query.val);
-    decrypted = decrypted.replace('+', '%2b');
     const parsedQuery = querystring.parse(decrypted);        
     const openGraphTitle = parsedQuery['snippetDescription'] ?? 'SpeakUp Snippet';    
 

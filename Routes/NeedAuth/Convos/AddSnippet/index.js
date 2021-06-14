@@ -3,6 +3,7 @@ const SnippetsDatabase = require('../../../../Logic/Database/SnippetsDatabase');
 const ConvosDatabase = require('../../../../Logic/Database/ConvosDatabase');
 const ConvosFileManager = require('../../../../Logic/ConvosFileManager');
 const Encryption = require('../../../../Logic/Encryption');
+const querystring = require('querystring')
 
 router.post('/', async (req, res) => {
     const convoId = req.body.convoId;
@@ -56,8 +57,8 @@ router.post('/', async (req, res) => {
     }
 
     const addSnippetResponse = await SnippetsDatabase.addSnippet(convoId, snippetStart, snippetEnd);
-    const createSnippetResponse = await ConvosFileManager.createSnippet(convoId, snippetStart, snippetEnd);
-    const unencryptedQuery = "convoId=" + convoId + "&snippetStart=" + snippetStart + "&snippetEnd=" + snippetEnd + '&snippetDescription=' + snippetDescription;    
+    const createSnippetResponse = await ConvosFileManager.createSnippet(convoId, snippetStart, snippetEnd);        
+    const unencryptedQuery = querystring.stringify({convoId: convoId, snippetStart: snippetStart, snippetEnd: snippetEnd, snippetDescription: snippetDescription});
     const encryptedQuery = Encryption.getEncryptedString(unencryptedQuery);
     const snippetLink = 'https://letsusespeakup.com/playsnippet?val=' + encryptedQuery;
 

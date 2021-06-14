@@ -14,12 +14,12 @@ router.get('/', async (req, res) => {
         })
     }
     let decrypted = Encryption.getDecryptedString(encrypted);
-    decrypted = decrypted.replace('+', '%2b');
     const parsedQuery = querystring.parse(decrypted);
         
     const convoId = parsedQuery['convoId'];
     const snippetStart = parsedQuery['snippetStart'];
     const snippetEnd = parsedQuery['snippetEnd'];
+    console.log("GET /Snippets. ConvoID: ", convoId, " Decrypted string: ", decrypted);
     
     if (!convoId) {
         return res.status(400).send({
@@ -45,7 +45,7 @@ router.get('/', async (req, res) => {
         });
     }
 
-    console.log("/Snippets. Does snippet exist in db. id: ", convoId, " start: ", snippetStart, " end: ", snippetEnd);
+    console.log("GET /Snippets Does snippet exist in db. id: ", convoId, " start: ", snippetStart, " end: ", snippetEnd);
     const isValidSnippet = await SnippetsDatabase.doesSnippetExistInDB(convoId, snippetStart, snippetEnd);
     if(!isValidSnippet){
         return res.status(500).send({
@@ -105,12 +105,13 @@ router.get('/mp4Preview',  async (req, res)=>{
         })
     }
     let decrypted = Encryption.getDecryptedString(encrypted);
-    decrypted = decrypted.replace('+', '%2b');
     const parsedQuery = querystring.parse(decrypted);
         
     const convoId = parsedQuery['convoId'];
     const snippetStart = parsedQuery['snippetStart'];
     const snippetEnd = parsedQuery['snippetEnd'];
+
+    console.log("GET /Snippets. ConvoID: ", convoId, " Decrypted string: ", decrypted);
     
     if (!convoId) {
         return res.status(400).send({
@@ -171,8 +172,7 @@ router.get('/snippetDescription', (req, res)=>{
             message: 'no query'
         })
     }
-    let decrypted = Encryption.getDecryptedString(encrypted);
-    decrypted = decrypted.replace('+', '%2b');
+    let decrypted = Encryption.getDecryptedString(encrypted);    
     const parsedQuery = querystring.parse(decrypted);
 
     const description = parsedQuery['snippetDescription'];
