@@ -3,8 +3,11 @@
  * (not streamed, but served) have the convoID encrypted.
  * Otherwise, people will be able to read the phone numbers from the
  * snippets' convoIds.
+ * 
+ * Preview image was generated with ffmpeg -loop 1 -i  mainImage.png -shortest -c:v libx264 -pix_fmt yuv420p -ss 0 -to 3600 1hrimage.mp4
+ * Then added keyframe with ffmpeg -i 1hrimage.mp4 -force_key_frames 00:00:00,00:00:01,00:00:02,00:00:03 1hrimage_keyframed4.mp4
+ * 
  */
-const MP3Cutter = require('./mp3-cutter');
 const { exec } = require('child_process');
 const Encryption = require('./Encryption');
 
@@ -20,35 +23,17 @@ const convertIdToFilePath = (convoId, extension = ".aac") => {
     return ('./Uploaded_Convos/' + convoId + extension);
 }
 
-/**
- * Converts the AAC to MP3 and saves it
- */
-const convertAACToMP3 = async (aacFilePath) => {
-    return new Promise((res, rej) => {
-        const mp3FilePath = aacFilePath.slice(0, aacFilePath.length - 4) + '.mp3';
-        const startTime = Date.now();
-        exec('ffmpeg -y -i ' + aacFilePath + ' ' + mp3FilePath, (error, stdout, stderr) => {
-            if (error) rej({ success: false, errorMessage: error });
-            const endTime = Date.now();
-            console.log("ConvosFileManager::convertAACToMP3. conversion time: ", (endTime - startTime));
-            res({ success: true });
-        })
-    })
-}
 
 const getSnippet = (convoId, snippetStart, snippetEnd) => {
     convoId = Encryption.getEncryptedString(convoId);
-    const outputFile = './Uploaded_Convos/' + convoId + '_' + snippetStart + '_' + snippetEnd + '.mp3';
+    const outputFile = './Uploaded_Convos/' + convoId + '_' + snippetStart + '_' + snippetEnd + '.aac';
     return outputFile;
 }
 
 /**
- * Returns a (possibly truncated) mp4 of the snippet.
  * getSnippet should be used rather than this method in all cases,
  * except when trying to serve a rich preview for iMessage.
  * 
- * If the snippet is truncated (as of writing this comment, it is truncated at 20 seconds),
- * it will have an MP4 image that says it is only a preview.
  * @param {*} convoId 
  * @param {*} snippetStart 
  * @param {*} snippetEnd 
@@ -63,12 +48,11 @@ const getSnippetRichPreviewMp4 = (convoId, snippetStart, snippetEnd) => {
 const createSnippet = async (convoId, snippetStart, snippetEnd) => {
     try {
         convoId = Encryption.getEncryptedString(convoId);
-        const sourceFile = './Uploaded_Convos/' + convoId + '.mp3';
-        const snippedMp3 = './Uploaded_Convos/' + convoId + '_' + snippetStart + '_' + snippetEnd + '.mp3';
+        const sourceFile = './Uploaded_Convos/' + convoId + '.aac';
+        const snippedAAC = './Uploaded_Convos/' + convoId + '_' + snippetStart + '_' + snippetEnd + '.aac';
         const mp4 = './Uploaded_Convos/' + convoId + '_' + snippetStart + '_' + snippetEnd + '.mp4';
-        snipMP3(sourceFile, snippedMp3, snippetStart, snippetEnd);
-        const isPreview = (snippetEnd - snippetStart) > 20;
-        await generateMP4FromMP3(snippedMp3, mp4, isPreview);
+        await snipAAC(sourceFile, snippedAAC, snippetStart, snippetEnd);        
+        await generateMP4FromAAC(sourceFile, mp4, snippetStart, snippetEnd);
         return {success: true};
     }
     catch (error) {
@@ -77,25 +61,30 @@ const createSnippet = async (convoId, snippetStart, snippetEnd) => {
     }
 }
 
-const snipMP3 = (mp3Source, mp3Output, snippetStart, snippetEnd) => {
-    MP3Cutter.cut({
-        src: mp3Source,
-        target: mp3Output,
-        start: snippetStart,
-        end: snippetEnd
-    });
-}
-
-const generateMP4FromMP3 = async(mp3Source, mp4Output, isPreview)=>{
-    const imageSource = isPreview ? 'mainImage_preview.png' : 'mainImage.png';
+const snipAAC = (aacSource, aacOutput, snippetStart, snippetEnd)=>{
     return new Promise((res, rej)=>{
         const startTime = Date.now();
-        exec('ffmpeg -y -loop 1 -i ' + imageSource + ' -i ' + mp3Source + ' -shortest -c:v libx264 -c:a eac3 -pix_fmt yuv420p -ss 0 -to 20 ' 
-            + mp4Output, (error, stdout, stderr)=>{
+        exec('ffmpeg -y -i ' + aacSource + ' -c:a copy -ss ' + snippetStart + ' -to ' + snippetEnd 
+            + ' ' + aacOutput, (error, stdout, stderr)=>{
             if(error) rej({success: false, errorMessage: error});
 
             const endTime = Date.now();
-            console.log("ConvosFileManager::generateMP4FromMP3. conversion time: ", (endTime - startTime));
+            console.log("ConvosFileManager::snipAAC. conversion time: ", (endTime - startTime));
+            res({success: true});
+        })
+    })
+}
+
+const generateMP4FromAAC = async(aacSource, mp4Output, snippetStart, snippetEnd)=>{
+    const videoSource = 'mainImage_1hr_video.mp4';
+    return new Promise((res, rej)=>{
+        const startTime = Date.now();
+        exec('ffmpeg -y -i ' + videoSource + ' -i ' + aacSource + ' -c:v copy -c:a copy -ss ' + snippetStart + ' -to ' + snippetEnd 
+            + ' ' + mp4Output, (error, stdout, stderr)=>{
+            if(error) rej({success: false, errorMessage: error});
+
+            const endTime = Date.now();
+            console.log("ConvosFileManager::generateMP4FromAAC. conversion time: ", (endTime - startTime));
             res({success: true});
         })
     })
@@ -104,5 +93,4 @@ const generateMP4FromMP3 = async(mp3Source, mp4Output, isPreview)=>{
 exports.convertIdToFilePath = convertIdToFilePath;
 exports.getSnippet = getSnippet;
 exports.getSnippetRichPreviewMp4 = getSnippetRichPreviewMp4;
-exports.convertAACToMP3 = convertAACToMP3;
 exports.createSnippet = createSnippet;
