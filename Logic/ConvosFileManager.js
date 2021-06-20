@@ -51,7 +51,7 @@ const createSnippet = async (convoId, snippetStart, snippetEnd) => {
         const sourceFile = './Uploaded_Convos/' + convoId + '.aac';
         const snippedAAC = './Uploaded_Convos/' + convoId + '_' + snippetStart + '_' + snippetEnd + '.aac';
         const mp4 = './Uploaded_Convos/' + convoId + '_' + snippetStart + '_' + snippetEnd + '.mp4';
-        snipAAC(sourceFile, snippedAAC, snippetStart, snippetEnd);        
+        await snipAAC(sourceFile, snippedAAC, snippetStart, snippetEnd);        
         await generateMP4FromAAC(sourceFile, mp4, snippetStart, snippetEnd);
         return {success: true};
     }
@@ -64,8 +64,8 @@ const createSnippet = async (convoId, snippetStart, snippetEnd) => {
 const snipAAC = (aacSource, aacOutput, snippetStart, snippetEnd)=>{
     return new Promise((res, rej)=>{
         const startTime = Date.now();
-        exec('ffmpeg -y -i ' + aacSource + ' -c:a copy -ss ' + snippetStart + '-to ' + snippetEnd 
-            + aacOutput, (error, stdout, stderr)=>{
+        exec('ffmpeg -y -i ' + aacSource + ' -c:a copy -ss ' + snippetStart + ' -to ' + snippetEnd 
+            + ' ' + aacOutput, (error, stdout, stderr)=>{
             if(error) rej({success: false, errorMessage: error});
 
             const endTime = Date.now();
@@ -79,8 +79,8 @@ const generateMP4FromAAC = async(aacSource, mp4Output, snippetStart, snippetEnd)
     const videoSource = 'mainImage_1hr_video.mp4';
     return new Promise((res, rej)=>{
         const startTime = Date.now();
-        exec('ffmpeg -y -i ' + videoSource + ' -i ' + aacSource + ' -c:v copy -c:a copy -ss ' + snippetStart + '-to ' + snippetEnd 
-            + mp4Output, (error, stdout, stderr)=>{
+        exec('ffmpeg -y -i ' + videoSource + ' -i ' + aacSource + ' -c:v copy -c:a copy -ss ' + snippetStart + ' -to ' + snippetEnd 
+            + ' ' + mp4Output, (error, stdout, stderr)=>{
             if(error) rej({success: false, errorMessage: error});
 
             const endTime = Date.now();
