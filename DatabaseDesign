@@ -22,3 +22,9 @@ CREATE TABLE snippets (
 	description VARCHAR(255) NULL,
 	FOREIGN KEY (convo_id) REFERENCES convos(id)
 );
+
+CREATE TABLE users(
+	phone_number VARCHAR(255) PRIMARY KEY,
+	first_name VARCHAR(255) NULL,
+	last_name VARCHAR(255) NULL
+);
