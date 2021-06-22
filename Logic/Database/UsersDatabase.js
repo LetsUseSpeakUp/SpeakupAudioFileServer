@@ -20,8 +20,36 @@ const addUser = async (phoneNumber, firstName, lastName)=>{
     }
 }
 
-const getContactsInDb = (contactsList)=>{
-    //TODO
+const getContactsInDb = async(contactsList)=>{
+    try{
+        if(contactsList.length === 0) throw 'empty contacts list';
+        console.log("UsersDatabase::getContactsInDb: ", contactsList, " type: ", (typeof(contactsList)));        
+
+        let phoneNumbersQueryString = 'phone_number=?'
+        for(let i= 1; i < contactsList.length - 1; i++){
+            phoneNumbersQueryString = phoneNumbersQueryString + ' OR phone_number=?'
+        }
+
+        const getContactsQuery = 
+        `SELECT * FROM users
+        WHERE ` + phoneNumbersQueryString;
+        
+        const bindParams = [];
+        for(const key in contactsList){
+            bindParams.push(contactsList[key]);
+        }        
+
+        const dbResponse = await DBQuerier.executeQuery(getContactsQuery, bindParams);
+        const contactsInDb = dbResponse[0].map((contactResult)=> contactResult.phone_number);
+        return {success: true, contactsInDb: JSON.stringify(contactsInDb)};
+    }
+    catch(error){
+        console.log("ERROR -- UsersDatabase::getContactsInDB: ", error);
+        return {success: false, errorMessage: error};
+    }
+    
+
 }
 
 exports.addUser = addUser;
+exports.getContactsInDb = getContactsInDb;

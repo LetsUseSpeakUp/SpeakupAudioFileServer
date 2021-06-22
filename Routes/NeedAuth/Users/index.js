@@ -19,8 +19,30 @@ router.post('/addUser', async(req, res)=>{
     }
 })
 
-router.post('/getContacts', (req, res)=>{
-    //TODO
+router.post('/getContacts', async (req, res)=>{
+    try{
+        const userContactsPostData = req.body.contacts;
+        console.log('/getContacts. Post data: ', userContactsPostData);
+        if(userContactsPostData == null) throw 'no contacts provided';
+        let userContacts = JSON.parse(req.body.contacts);
+        if(typeof(userContacts) === 'string') userContacts = JSON.parse(userContacts);
+        const contactsInDBResponse = await UsersDatabase.getContactsInDb(userContacts);
+        if(!contactsInDBResponse.success){
+            throw contactsInDBResponse.errorMessage;
+        }
+        else{
+            return res.status(200).send({
+                contactsInDb: contactsInDBResponse.contactsInDb
+            });
+        }
+    }
+    catch(error){
+        console.log("ERROR -- /getContacts: ", error)
+        return res.status(500).send({
+            message: error
+        });
+    }
+     
 })
 
 module.exports = router;
