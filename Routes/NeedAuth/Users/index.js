@@ -22,7 +22,6 @@ router.post('/addUser', async(req, res)=>{
 router.post('/getContacts', async (req, res)=>{
     try{
         const userContactsPostData = req.body.contacts;
-        console.log('/getContacts. Post data: ', userContactsPostData);
         if(userContactsPostData == null) throw 'no contacts provided';
         let userContacts = JSON.parse(req.body.contacts);
         if(typeof(userContacts) === 'string') userContacts = JSON.parse(userContacts);

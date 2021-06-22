@@ -23,16 +23,15 @@ const addUser = async (phoneNumber, firstName, lastName)=>{
 const getContactsInDb = async(contactsList)=>{
     try{
         if(contactsList.length === 0) throw 'empty contacts list';
-        console.log("UsersDatabase::getContactsInDb: ", contactsList, " type: ", (typeof(contactsList)));        
 
         let phoneNumbersQueryString = 'phone_number=?'
-        for(let i= 1; i < contactsList.length - 1; i++){
+        for(let i= 0; i < contactsList.length - 1; i++){
             phoneNumbersQueryString = phoneNumbersQueryString + ' OR phone_number=?'
         }
 
         const getContactsQuery = 
         `SELECT * FROM users
-        WHERE ` + phoneNumbersQueryString;
+        WHERE ` + phoneNumbersQueryString + ';';
         
         const bindParams = [];
         for(const key in contactsList){
