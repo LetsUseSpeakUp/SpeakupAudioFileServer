@@ -8,7 +8,7 @@ router.post('/addUser', async(req, res)=>{
     const first_name = req.user['https://backend.letsusespeakup.com/token/usermetadata/metadata']?.first_name;
     const last_name = req.user['https://backend.letsusespeakup.com/token/usermetadata/metadata']?.last_name;
 
-    const addUserResponse = await UsersDatabase.addUser(phone_number, first_name, last_name);
+    const addUserResponse = await UsersDatabase.addUser(phone_number);
     if(addUserResponse.success){
         return res.status(200).send();
     }

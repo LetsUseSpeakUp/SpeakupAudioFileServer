@@ -1,16 +1,14 @@
 const DBQuerier = require('./DatabaseQuerier')
 
-const addUser = async (phoneNumber, firstName, lastName)=>{
+const addUser = async (phoneNumber)=>{
     try{
         const addUserQuery = 
         `INSERT INTO users
-            (phone_number, first_name, last_name)
+            (phone_number)
         VALUES
-            (?, ?, ?)
-        ON DUPLICATE KEY UPDATE
-            first_name = ?, last_name=?;` 
+            (?);` 
 
-        const queryParams = [phoneNumber, firstName, lastName, firstName, lastName];
+        const queryParams = [phoneNumber];
         await DBQuerier.executeQuery(addUserQuery, queryParams);
         return {success: true};            
     }
