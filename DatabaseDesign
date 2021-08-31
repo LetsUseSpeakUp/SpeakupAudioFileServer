@@ -1,9 +1,9 @@
 CREATE TABLE convos (
 	id VARCHAR(255) UNIQUE NOT NULL,
-	initiator_number VARCHAR(20) NOT NULL,
+	initiator_number VARCHAR(20) NULL,
 	initiator_first_name VARCHAR(30) NULL,
 	initiator_last_name VARCHAR(30) NULL,
-	receiver_number VARCHAR(20) NOT NULL,
+	receiver_number VARCHAR(20) NULL,
 	receiver_first_name VARCHAR (30) NULL,
 	receiver_last_name VARCHAR (30) NULL,
 	timestamp_of_start BIGINT NULL,
